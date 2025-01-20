@@ -1,0 +1,68 @@
+<%- include("includes/header", { title: "Share File" }) %>
+
+    <div class="container mt-5">
+        <%- include("includes/ResponseAlert", { request: request }) %>
+
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card shadow-lg border-0">
+                        <div class="card-header bg-primary text-white text-center">
+                            <h2>Share File</h2>
+                            <p class="mb-0">Easily share your file with others</p>
+                        </div>
+                        <div class="card-body p-4">
+                            <h4 class="mb-4 text-center">
+                                File: <strong><%= link.file.name %></strong>
+                            </h4>
+                            <form action="/ShareViaLink" method="POST">
+                                <!-- Hidden File ID -->
+                                <input type="hidden" name="_id" value="<%= link.file._id %>">
+
+                                <!-- Project Name -->
+                                <div class="mb-3">
+                                    <label for="projectName" class="form-label">Project Name</label>
+                                    <input type="text" id="projectName" name="projectName" class="form-control rounded-pill px-3" placeholder="Enter project name" required>
+                                </div>
+
+                                <!-- Email -->
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Recipient's Registered Email</label>
+                                    <input type="email" id="email" name="email" class="form-control rounded-pill px-3" placeholder="Enter registered email" required>
+                                </div>
+
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 shadow-sm">Share Link</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    <%- include("includes/footer") %>
+
+        <style>
+            body {
+                background: linear-gradient(to right, #6a11cb, #2575fc);
+                font-family: 'Roboto', sans-serif;
+            }
+            
+            .container {
+                max-width: 800px;
+            }
+            
+            .card {
+                border-radius: 20px;
+            }
+            
+            .btn-primary {
+                background-color: #2575fc;
+                border: none;
+                transition: background-color 0.3s ease;
+            }
+            
+            .btn-primary:hover {
+                background-color: #6a11cb;
+            }
+        </style>

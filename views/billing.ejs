@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing Form</title>
+    <style>
+        /* Basic styling for a clean, modern look */
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        
+        .billing-form-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: auto;
+        }
+        
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+        
+        input,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        .item-row {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        
+        .item-row textarea {
+            resize: none;
+        }
+        
+        .item-row button {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .item-row button:hover {
+            background-color: #e60000;
+        }
+        
+        .total-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .add-item-btn {
+            background-color: #008CBA;
+            margin-top: 0;
+        }
+        
+        .add-item-btn:hover {
+            background-color: #007bb5;
+        }
+        
+        @media (max-width: 600px) {
+            .billing-form-container {
+                padding: 15px;
+            }
+            input,
+            textarea {
+                padding: 8px;
+            }
+            button {
+                padding: 8px 16px;
+            }
+            .item-row {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="billing-form-container" id="billing-form-container">
+        <h2>Billing Form</h2>
+        <form id="billing-form" method="post" action="/submitBill" onsubmit="submitBillingForm(event)">
+            <!-- Invoice Number (Auto-generated) -->
+            <label for="invoice-number">Invoice Number:</label>
+            <input type="text" name="invoice_number" id="invoice-number" readonly><br><br>
+
+            <!-- Customer Name -->
+            <label for="customer_name">Customer Name:</label>
+            <input type="text" name="customer_name" required><br><br>
+
+            <!-- Customer Email -->
+            <label for="customer_email">Customer Email:</label>
+            <input type="email" name="customer_email" required><br><br>
+
+            <!-- Items Container -->
+            <div id="items-container">
+                <div class="item-row">
+                    <textarea class="hight" name="items[0][description]" placeholder="Enter Material Name" required></textarea>
+                    <input type="number" name="items[0][length]" placeholder="Length" required oninput="updateQuantity(0)">
+                    <input type="number" name="items[0][breadth]" placeholder="Breadth" required oninput="updateQuantity(0)">
+                    <input type="number" name="items[0][depth]" placeholder="Depth" required oninput="updateQuantity(0)">
+                    <input type="number" name="items[0][price]" placeholder="Price (₹)" required oninput="updateTotal()">
+                    <input type="number" name="items[0][quantity]" placeholder="Quantity" readonly>
+                    <button type="button" onclick="removeItem(this)">Remove</button>
+                </div>
+            </div>
+
+            <button type="button" class="add-item-btn" onclick="addItem()">Add Item</button><br><br>
+
+            <!-- Total -->
+            <div class="total-container">
+                <label>Total:</label>
+                <input type="number" name="total" id="total" readonly>
+            </div><br>
+
+            <button type="submit">Submit Billing Information</button>
+        </form>
+    </div>
+
+    <script>
+        // Generate a dynamic invoice number
+        document.getElementById('invoice-number').value = `INV-${Date.now()}`; // Unique based on timestamp
+
+        let itemCount = 1;
+
+        // Function to add a new item input field
+        function addItem() {
+            const container = document.getElementById('items-container');
+            const newItemRow = document.createElement('div');
+            newItemRow.classList.add('item-row');
+            newItemRow.innerHTML = `
+                <textarea class="hight" name="items[${itemCount}][description]" required></textarea>
+                <input type="number" name="items[${itemCount}][length]" placeholder="Length" required oninput="updateQuantity(${itemCount})">
+                <input type="number" name="items[${itemCount}][breadth]" placeholder="Breadth" required oninput="updateQuantity(${itemCount})">
+                <input type="number" name="items[${itemCount}][depth]" placeholder="Depth" required oninput="updateQuantity(${itemCount})">
+                <input type="number" name="items[${itemCount}][price]" placeholder="Price (₹)" required oninput="updateTotal()">
+                <input type="number" name="items[${itemCount}][quantity]" placeholder="Quantity" readonly>
+                <button type="button" onclick="removeItem(this)">Remove</button>`;
+            container.appendChild(newItemRow);
+            newItemRow.querySelector('textarea').focus(); // Auto-focus on the first field of the new row
+            itemCount++;
+        }
+
+        // Function to remove an item row
+        function removeItem(button) {
+            const row = button.closest('.item-row');
+            row.remove(); // Remove the entire row
+            updateTotal(); // Recalculate the total after removal
+        }
+
+        // Function to update the quantity based on dimensions
+        function updateQuantity(itemIndex) {
+            const length = parseFloat(document.querySelector(`input[name="items[${itemIndex}][length]"]`).value) || 0;
+            const breadth = parseFloat(document.querySelector(`input[name="items[${itemIndex}][breadth]"]`).value) || 0;
+            const depth = parseFloat(document.querySelector(`input[name="items[${itemIndex}][depth]"]`).value) || 0;
+
+            const quantity = length * breadth * depth;
+            document.querySelector(`input[name="items[${itemIndex}][quantity]"]`).value = quantity.toFixed(2);
+
+            updateTotal();
+        }
+
+        // Function to update the total dynamically
+        function updateTotal() {
+            const itemRows = document.querySelectorAll('.item-row');
+            let total = 0;
+
+            itemRows.forEach((row) => {
+                const quantityInput = row.querySelector('input[name$="[quantity]"]');
+                const priceInput = row.querySelector('input[name$="[price]"]');
+
+                const quantity = parseFloat(quantityInput.value) || 0;
+                const price = parseFloat(priceInput.value) || 0;
+
+                if (quantity && price) {
+                    total += quantity * price;
+                }
+            });
+
+            document.getElementById('total').value = total.toFixed(2); // Display total with 2 decimal places
+        }
+
+        // Function to submit the billing form
+        // Function to submit the billing form
+        function submitBillingForm(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Gather form data
+            const invoiceNumber = document.getElementById('invoice-number').value;
+            const customerName = document.querySelector('input[name="customer_name"]').value;
+            const customerEmail = document.querySelector('input[name="customer_email"]').value;
+            const itemRows = document.querySelectorAll('.item-row');
+
+            // Create a new window for printing
+            const printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write('<html><head><title>Print Bill</title>');
+            printWindow.document.write('<style>table { width: 100%; border-collapse: collapse; } th, td { border: 1px solid #ccc; padding: 8px; text-align: left; } th { background-color: #f2f2f2; }</style>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write('<h2>Invoice</h2>');
+            printWindow.document.write(`<p><strong>Invoice Number:</strong> ${invoiceNumber}</p>`);
+            printWindow.document.write(`<p><strong>Customer Name:</strong> ${customerName}</p>`);
+            printWindow.document.write(`<p><strong>Customer Email:</strong> ${customerEmail}</p>`);
+            printWindow.document.write('<table><tr><th>Description</th><th>Length</th><th>Breadth</th><th>Depth</th><th>Price (₹)</th><th>Quantity</th></tr>');
+
+            itemRows.forEach(row => {
+                const description = row.querySelector('textarea').value;
+                const length = row.querySelector('input[name$="[length]"]').value;
+                const breadth = row.querySelector('input[name$="[breadth]"]').value;
+                const depth = row.querySelector('input[name$="[depth]"]').value;
+                const price = row.querySelector('input[name$="[price]"]').value;
+                const quantity = row.querySelector('input[name$="[quantity]"]').value;
+
+                printWindow.document.write(`<tr>
+            <td>${description}</td>
+            <td>${length}</td>
+            <td>${breadth}</td>
+            <td>${depth}</td>
+            <td>${price}</td>
+            <td>${quantity}</td>
+        </tr>`);
+            });
+
+            printWindow.document.write('</table>');
+            printWindow.document.write(`<h3>Total: ₹${document.getElementById('total').value}</h3>`);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close(); // Close the document for writing
+            printWindow.print(); // Open the print dialog
+        }
+    </script>
+</body>
+
+</html>

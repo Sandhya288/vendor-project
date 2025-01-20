@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Materials Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        .materials-form-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 900px;
+            overflow-x: hidden;
+        }
+        
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+        
+        input,
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        .item-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .item-row input,
+        .item-row select {
+            flex: 1;
+        }
+        
+        .item-row button {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .item-row button:hover {
+            background-color: #e60000;
+        }
+        
+        .add-item-btn {
+            background-color: #008CBA;
+        }
+        
+        .add-item-btn:hover {
+            background-color: #007bb5;
+        }
+        
+        .total-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .total-summary {
+            font-weight: bold;
+        }
+        
+        #squareFootage {
+            width: 250px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="materials-form-container">
+        <h2>Materials Form</h2>
+        <form id="materials-form" onsubmit="submitMaterialsForm(event)">
+            <label for="squareFootage">Select Square Footage:</label>
+            <select id="squareFootage" name="squareFootage" onchange="handleSquareFootageChange(this)">
+                <option>Select</option>
+                <option value="100">100 sq ft</option>
+                <option value="500">500 sq ft</option>
+                <option value="1000">1000 sq ft</option>
+                <option value="1500">1500 sq ft</option>
+                <option value="other">Other</option>
+            </select>
+            <input type="number" id="customSquareFootage" name="customSquareFootage" placeholder="Enter custom square footage" style="display: none;" />
+            <div id="materials-container">
+                <div class="item-row">
+                    <select name="materials[][name]" onchange="handleMaterialChange(this)">
+                        <option value="FOUNDATION STONE">FOUNDATION STONE</option>
+                        <option value="JELLY">JELLY</option>
+                        <option value="CEMENT">CEMENT</option>
+                        <option value="SAND">SAND</option>
+                        <option value="LATERITE STONE">LATERITE STONE</option>
+                        <option value="SOLID BLOCK">SOLID BLOCK</option>
+                        <option value="STEEL ROD - mm">STEEL ROD - mm</option>
+                        <option value="STEEL ROD - mm">STEEL ROD - mm</option>
+                        <option value="GRANITE">GRANITE</option>
+                        <option value="VITRIFIED TILE">VITRIFIED TILE</option>
+                        <option value="BATHROOM FLOOR TILE">BATHROOM FLOOR TILE</option>
+                        <option value="BATHROOM WALL TILE">BATHROOM WALL TILE</option>
+                        <option value="WOOD (doors and windows)">WOOD (doors and windows)</option>
+                        <option value="NO. OF DOOR PANEL">NO. OF DOOR PANEL</option>
+                        <option value="NO. OF WINDOW PANEL">NO. OF WINDOW PANEL</option>
+                        <option value="WALL PUTTY">WALL PUTTY</option>
+                        <option value="WATER PROOFING CHEMICAL">WATER PROOFING CHEMICAL</option>
+                        <option value="TILE ADHESIVE">TILE ADHESIVE</option>
+                        <option value="BLACK GRANITE">BLACK GRANITE</option>
+                        <option value="PAINT">PAINT</option>
+                        <option value="WHITE WASH">WHITE WASH</option>
+                        <option value="RED BRICK">RED BRICK</option>
+                        <option value="OTHER">Other</option>
+                    </select>
+                    <input type="text" name="materials[][customName]" placeholder="Enter material name" style="display: none;">
+                    <input type="text" name="materials[][subcategory]" placeholder="Enter subcategory name">
+                    <input type="number" name="materials[][quantity]" placeholder="Quantity" required onchange="updateTotal(this)">
+                    <input type="number" name="materials[][rate]" placeholder="Rate (₹)" required onchange="updateTotal(this)">
+                    <input type="number" name="materials[][total]" placeholder="Total (₹)" readonly>
+                    <button type="button" class="remove-item-btn" onclick="removeRow(this)">Remove</button>
+                </div>
+            </div>
+            <button type="button" class="add-item-btn" onclick="addRow()">Add Material</button>
+
+            <div class="total-container">
+                <div class="total-summary">
+                    Total Cost: ₹<span id="totalCost">0.00</span>
+                </div>
+                <button type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function handleMaterialChange(selectElement) {
+            const customNameInput = selectElement.nextElementSibling;
+            if (selectElement.value === "OTHER") {
+                customNameInput.style.display = "block";
+                customNameInput.required = true;
+            } else {
+                customNameInput.style.display = "none";
+                customNameInput.required = false;
+            }
+        }
+
+        function addRow() {
+            const materialsContainer = document.getElementById("materials-container");
+            const newRow = document.createElement("div");
+            newRow.classList.add("item-row");
+            newRow.innerHTML = `
+                <select name="materials[][name]" onchange="handleMaterialChange(this)">
+                    <option value="FOUNDATION STONE">FOUNDATION STONE</option>
+                    <option value="JELLY">JELLY</option>
+                    <option value="CEMENT">CEMENT</option>
+                    <option value="SAND">SAND</option>
+                    <option value="LATERITE STONE">LATERITE STONE</option>
+                    <option value="SOLID BLOCK">SOLID BLOCK</option>
+                    <option value="STEEL ROD - mm">STEEL ROD - mm</option>
+                    <option value="STEEL ROD - mm">STEEL ROD - mm</option>
+                    <option value="GRANITE">GRANITE</option>
+                    <option value="VITRIFIED TILE">VITRIFIED TILE</option>
+                    <option value="BATHROOM FLOOR TILE">BATHROOM FLOOR TILE</option>
+                    <option value="BATHROOM WALL TILE">BATHROOM WALL TILE</option>
+                    <option value="WOOD (doors and windows)">WOOD (doors and windows)</option>
+                    <option value="NO. OF DOOR PANEL">NO. OF DOOR PANEL</option>
+                    <option value="NO. OF WINDOW PANEL">NO. OF WINDOW PANEL</option>
+                    <option value="WALL PUTTY">WALL PUTTY</option>
+                    <option value="WATER PROOFING CHEMICAL">WATER PROOFING CHEMICAL</option>
+                    <option value="TILE ADHESIVE">TILE ADHESIVE</option>
+                    <option value="BLACK GRANITE">BLACK GRANITE</option>
+                    <option value="PAINT">PAINT</option>
+                    <option value="WHITE WASH">WHITE WASH</option>
+                    <option value="RED BRICK">RED BRICK</option>
+                    <option value="OTHER">Other</option>
+                </select>
+                <input type="text" name="materials[][customName]" placeholder="Enter material name" style="display: none;">
+                <input type="text" name="materials[][subcategory]" placeholder="Enter subcategory name">
+                <input type="number" name="materials[][quantity]" placeholder="Quantity" required onchange="updateTotal(this)">
+                <input type="number" name="materials[][rate]" placeholder="Rate (₹)" required onchange="updateTotal(this)">
+                <input type="number" name="materials[][total]" placeholder="Total (₹)" readonly>
+                <button type="button" class="remove-item-btn" onclick="removeRow(this)">Remove</button>
+            `;
+            materialsContainer.appendChild(newRow);
+        }
+
+        function removeRow(button) {
+            button.closest(".item-row").remove();
+            updateTotals();
+        }
+
+        function updateTotal(input) {
+            const row = input.closest(".item-row");
+            const quantity = parseFloat(row.querySelector('[name="materials[][quantity]"]').value) || 0;
+            const rate = parseFloat(row.querySelector('[name="materials[][rate]"]').value) || 0;
+            const total = quantity * rate;
+            row.querySelector('[name="materials[][total]"]').value = total.toFixed(2);
+            updateTotals();
+        }
+
+        function updateTotals() {
+            let totalCost = 0;
+            const rows = document.querySelectorAll(".item-row");
+
+            rows.forEach((row) => {
+                const total = parseFloat(row.querySelector('[name="materials[][total]"]').value) || 0;
+                totalCost += total;
+            });
+
+            document.getElementById("totalCost").textContent = totalCost.toFixed(2);
+        }
+
+        function submitMaterialsForm(event) {
+            event.preventDefault();
+            alert('Form submitted successfully!');
+        }
+
+        function handleSquareFootageChange(selectElement) {
+            const quantityInputs = document.querySelectorAll('[name="materials[][quantity]"]');
+            const rateInputs = document.querySelectorAll('[name="materials[][rate]"]');
+            const totalInputs = document.querySelectorAll('[name="materials[][total]"]');
+            const customSquareFootageInput = document.getElementById("customSquareFootage");
+
+            const sqFootage = selectElement.value;
+
+            // Hide custom square footage input if not selected
+            if (sqFootage === "other") {
+                customSquareFootageInput.style.display = "block";
+            } else {
+                customSquareFootageInput.style.display = "none";
+            }
+
+            // Update quantity, rate, and total based on selected square footage
+            if (sqFootage === "100") {
+                quantityInputs.forEach(input => input.value = 80);
+                rateInputs.forEach(input => input.value = 5);
+                totalInputs.forEach(input => input.value = (80 * 5).toFixed(2));
+            } else if (sqFootage === "500") {
+                quantityInputs.forEach(input => input.value = 85);
+                rateInputs.forEach(input => input.value = 5);
+                totalInputs.forEach(input => input.value = (85 * 5).toFixed(2));
+            } else if (sqFootage === "1000") {
+                quantityInputs.forEach(input => input.value = 90);
+                rateInputs.forEach(input => input.value = 6);
+                totalInputs.forEach(input => input.value = (90 * 6).toFixed(2));
+            } else if (sqFootage === "1500") {
+                quantityInputs.forEach(input => input.value = 95);
+                rateInputs.forEach(input => input.value = 8);
+                totalInputs.forEach(input => input.value = (95 * 8).toFixed(2));
+            }
+            updateTotals();
+        }
+    </script>
+</body>
+
+</html>

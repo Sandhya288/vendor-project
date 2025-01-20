@@ -1,0 +1,256 @@
+<%- include("includes/header", { title: "Shared with me" }) %>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="section-title">Shared With Me</h2>
+
+                <% 
+                // Group files by project name
+                let groupedFiles = {};
+                sharedLinks.forEach(function(link) {
+                    if (link.projectName) {
+                        if (!groupedFiles[link.projectName]) {
+                            groupedFiles[link.projectName] = [];
+                        }
+                        groupedFiles[link.projectName].push(link);
+                    }
+                });
+
+                // Iterate over grouped files and display them
+                Object.keys(groupedFiles).forEach(function(projectName) { 
+                    const files = groupedFiles[projectName];
+            %>
+
+                    <div class="card mb-4 shadow-lg">
+                        <div class="card-body">
+                            <h4 class="project-title">
+                                <%= projectName %>
+                            </h4>
+
+                            <% files.forEach(function(link) { %>
+                                <div class="file-entry">
+                                    <!-- File Details -->
+                                    <h5 class="card-title">
+                                        <%= link.file.name %>
+                                    </h5>
+
+                                    <% if (link.uploadedBy) { %>
+                                        <p class="card-text">
+                                            <strong>Uploaded by:</strong>
+                                            <%= link.uploadedBy.name %> (
+                                                <%= link.uploadedBy.email %>)
+                                        </p>
+                                        <% } else { %>
+                                            <p class="card-text">
+                                                <strong>Uploaded by:</strong> Unknown user
+                                            </p>
+                                            <% } %>
+
+                                                <!-- Download Button -->
+                                                <a href="/DownloadFile/<%= link.file._id %>" class="btn btn-success">Download</a>
+
+                                                <!-- View Button -->
+                                                <button class="btn btn-primary ms-2" onclick="viewFile(this);" data-id="<%= link.file._id %>" data-name="<%= link.file.name %>" data-type="<%= link.file.type %>">
+                                    View
+                                </button>
+                                </div>
+                                <% }); %>
+                        </div>
+                    </div>
+
+                    <% }); %>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Viewing File -->
+    <div class="modal fade" id="viewFileModal" tabindex="-1" aria-labelledby="viewFileModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewFileModalLabel">View File</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Dynamic content will be injected here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function viewFile(self) {
+            const fileId = self.getAttribute("data-id");
+            const fileName = self.getAttribute("data-name");
+            const fileType = self.getAttribute("data-type");
+
+            const modalTitle = document.querySelector("#viewFileModal .modal-title");
+            const modalBody = document.querySelector("#viewFileModal .modal-body");
+
+            if (!modalTitle || !modalBody) {
+                console.error("Modal elements not found!");
+                return;
+            }
+
+            modalTitle.textContent = fileName;
+
+            let previewHtml = '';
+
+            if (fileType.startsWith("image/")) {
+                previewHtml = `<img src="/PreviewFile/${fileId}" alt="${fileName}" class="img-fluid" />`;
+            } else if (fileType === "application/pdf") {
+                previewHtml = `<iframe src="/PreviewFile/${fileId}" style="width: 100%; height: 500px;" frameborder="0"></iframe>`;
+            } else if (fileType === "text/plain" || fileType === "text/html" || fileType === "text/csv" || fileType === "text/markdown") {
+                fetch(`/PreviewFile/${fileId}`)
+                    .then(response => response.text())
+                    .then(content => {
+                        modalBody.innerHTML = `<pre>${content}</pre>`;
+                    })
+                    .catch(error => {
+                        console.error("Error loading file:", error);
+                        modalBody.innerHTML = `<p>Failed to load file content.</p>`;
+                    });
+                return;
+            } else {
+                previewHtml = `<p>Preview not available for this file type. Please download the file to view.</p>`;
+            }
+
+            modalBody.innerHTML = previewHtml;
+            $("#viewFileModal").modal("show");
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <%- include("includes/footer") %>
+
+
+        <style>
+            /* General Button Styling */
+            
+            .btn-success {
+                background-color: #28a745;
+                border-color: #28a745;
+                color: white;
+                font-weight: bold;
+                border-radius: 5px;
+                padding: 10px 20px;
+                transition: background-color 0.3s ease, transform 0.3s ease;
+            }
+            
+            .btn-success:hover {
+                background-color: #218838;
+                border-color: #1e7e34;
+                transform: translateY(-2px);
+            }
+            
+            .btn-primary {
+                background-color: #007bff;
+                border-color: #007bff;
+                color: white;
+                font-weight: bold;
+                border-radius: 5px;
+                padding: 10px 20px;
+                transition: background-color 0.3s ease, transform 0.3s ease;
+            }
+            
+            .btn-primary:hover {
+                background-color: #0056b3;
+                border-color: #004085;
+                transform: translateY(-2px);
+            }
+            /* Card Styling */
+            
+            .card {
+                border: none;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            }
+            
+            .card-body {
+                padding: 20px;
+                background-color: #f9f9f9;
+            }
+            
+            .card-title {
+                font-size: 1.5rem;
+                font-weight: 600;
+                margin-bottom: 10px;
+            }
+            
+            .card-text {
+                font-size: 1rem;
+                color: #555;
+            }
+            /* Project Title */
+            
+            .project-title {
+                font-size: 1.75rem;
+                font-weight: 700;
+                color: #2d87f0;
+                margin-bottom: 15px;
+            }
+            /* File Entry */
+            
+            .file-entry {
+                margin-bottom: 15px;
+            }
+            /* Section Title */
+            
+            .section-title {
+                font-size: 2.5rem;
+                font-weight: 700;
+                color: #333;
+                margin-bottom: 30px;
+                text-align: center;
+            }
+            /* Modal Styles */
+            
+            .modal-content {
+                border-radius: 10px;
+                border: 1px solid #dee2e6;
+            }
+            
+            .modal-header {
+                background-color: #f8f9fa;
+                border-bottom: 1px solid #dee2e6;
+                border-top-left-radius: 10px;
+                border-top-right-radius: 10px;
+            }
+            
+            .modal-title {
+                font-weight: bold;
+            }
+            
+            .modal-body {
+                padding: 30px;
+                text-align: center;
+            }
+            
+            .modal-footer {
+                border-top: none;
+                justify-content: center;
+            }
+            
+            .modal-footer button {
+                border-radius: 5px;
+                padding: 10px 20px;
+                font-weight: bold;
+            }
+            /* Layout & Spacing */
+            
+            .container {
+                margin-top: 50px;
+                margin-bottom: 50px;
+            }
+        </style>

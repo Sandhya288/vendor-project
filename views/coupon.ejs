@@ -1,0 +1,264 @@
+<%- include("includes/header", { "title": "Coupon" }) %>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .table-container {
+            max-width: 50%;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        
+        .search-bar {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .search-bar input {
+            padding: 10px;
+            width: 50%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        thead th {
+            background-color: #0fcb35;
+            color: #fff;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        tbody tr:nth-child(odd) {
+            background-color: #f9f9f9;
+        }
+        
+        tbody tr:nth-child(even) {
+            background-color: #e9e9e9;
+        }
+        
+        tbody td {
+            padding: 10px;
+            color: #333;
+        }
+        
+        tbody td a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        
+        tbody td a:hover {
+            text-decoration: underline;
+        }
+        
+        tbody tr:hover {
+            background-color: #d1ecf1;
+        }
+        /* Modal styles */
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            position: relative;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-content .image-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content img {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+        
+        .modal-content .overlay-text {
+            position: absolute;
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            color: #333;
+            cursor: pointer;
+        }
+        
+        .modal-content p {
+            margin: 10px 0;
+            font-size: 16px;
+            color: #333;
+        }
+    </style>
+
+    <div class="table-container">
+        <h1>Coupons Added Vendors</h1>
+        <div class="search-bar">
+            <input type="text" id="searchLocation" placeholder="Search by Location" oninput="filterTable()">
+        </div>
+        <table id="profileTable">
+            <thead>
+                <tr>
+                    <th>Location</th>
+                    <th>Coupons</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <% profile.forEach(p => { %>
+                    <tr>
+                        <td>
+                            <%= p.location %>
+                        </td>
+
+                        <td>
+                            <% if (p.coupon) { %>
+                                <span onclick="showCouponModal('<%= p.coupon %>', '<%= p.name %>', '<%= p.storelink %>')">
+                                    <%= p.coupon %>
+                                    <i class="fas fa-coins" style="color: gold;"></i>
+                                </span>
+
+                                <% } else { %>
+                                    <span>No Coupons</span>
+                                    <% } %>
+                        </td>
+
+                    </tr>
+                    <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal -->
+    <div id="couponModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCouponModal()">&times;</span>
+            <div class="image-container">
+                <img id="couponImage" src="" alt="Coupon Image">
+                <div id="couponText" class="overlay-text"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <%- include("includes/footer") %>
+
+        <script>
+            // Random image URLs (replace with actual URLs or backend call)
+            const images = [
+                "https://img.freepik.com/premium-vector/snowy-winter-background_1193-31.jpg?w=740",
+                "https://img.freepik.com/free-vector/background-realistic-hand-drawn-floral_52683-28926.jpg?t=st=1735886832~exp=1735890432~hmac=e95df7b005abda86a9c57bc7b6031cd4dc5c6883e54f685f6bac93bc300c3e63&w=900",
+                "https://img.freepik.com/free-vector/engraving-hand-drawn-botanical-pattern_52683-65442.jpg?t=st=1735886850~exp=1735890450~hmac=351de5ca506178c4cb2af9e672a3f1a28c1f2cef8427a201f0407cb8c3ee9ac2&w=740",
+                "https://img.freepik.com/premium-vector/christmas-seamless-pattern-snowflakes-different-shapes-sizes-transparency-light-blue-colors_444390-6859.jpg?w=740",
+                "https://img.freepik.com/premium-vector/christmas-seamless-pattern-with-big-snowflakes-light-blue-background_444390-3729.jpg?w=740",
+                "https://img.freepik.com/premium-vector/colorful-background-wallpapers_24877-34353.jpg?w=740",
+                "https://img.freepik.com/free-vector/colorful-hand-drawn-floral-background_23-2148393983.jpg?t=st=1735886972~exp=1735890572~hmac=07e9f53617280f991c2168871db4702d829c8f317ca82c90830f853b590a2ed4&w=900",
+                "https://img.freepik.com/premium-photo/blue-winter-background-with-beautiful-snowflakes_476363-2344.jpg?w=996",
+                "https://img.freepik.com/free-vector/colorful-hand-drawn-floral-background_23-2148393983.jpg?t=st=1735886972~exp=1735890572~hmac=07e9f53617280f991c2168871db4702d829c8f317ca82c90830f853b590a2ed4&w=900",
+                "https://img.freepik.com/free-vector/simple-blue-technology-background_1035-8840.jpg?t=st=1735886946~exp=1735890546~hmac=ed2bf42ef1de4d2aac7a18ec59b517aa3fe2109905e5f80b6fd5b08bb0fa917d&w=740",
+            ];
+
+            function showCouponModal(coupon, businessName, storeLink) {
+                const modal = document.getElementById("couponModal");
+                const image = document.getElementById("couponImage");
+                const text = document.getElementById("couponText");
+
+                // Fetch random image
+                const randomImage = images[Math.floor(Math.random() * images.length)];
+                image.src = randomImage;
+
+                // Add click event to navigate to store link
+                if (storeLink) {
+                    image.style.cursor = "pointer";
+                    image.onclick = () => {
+                        window.open(storeLink, "_blank");
+                    };
+                } else {
+                    image.style.cursor = "default";
+                    image.onclick = null; // Remove any previous event
+                }
+
+                // Add business name and coupon to overlay
+                text.innerHTML = `<strong>${businessName}</strong><br>${coupon}`;
+
+                // Show modal
+                modal.style.display = "flex";
+            }
+
+
+
+            function closeCouponModal() {
+                const modal = document.getElementById("couponModal");
+                modal.style.display = "none";
+            }
+            const locationTd = rows[i].getElementsByTagName("td")[2];
+
+            function filterTable() {
+                const input = document.getElementById("searchLocation");
+                const filter = input.value.toLowerCase();
+                const table = document.getElementById("profileTable");
+                const rows = table.getElementsByTagName("tr");
+
+                for (let i = 1; i < rows.length; i++) {
+                    const locationTd = rows[i].getElementsByTagName("td")[0]; // First column for location
+                    const couponTd = rows[i].getElementsByTagName("td")[1]; // Second column for coupon
+                    const couponSpan = couponTd ? couponTd.querySelector("span") : null;
+                    const hasCoupon = couponSpan && couponSpan.textContent.trim() !== "No Coupons";
+
+                    if (locationTd) {
+                        const locationText = locationTd.textContent || locationTd.innerText;
+                        rows[i].style.display =
+                            locationText.toLowerCase().includes(filter) && hasCoupon ? "" : "none";
+                    } else {
+                        rows[i].style.display = "none";
+                    }
+                }
+            }
+        </script>

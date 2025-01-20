@@ -1,0 +1,42 @@
+{
+    "name": "file-transfer-web-app-nodejs-mongodb",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "serve": "vue-cli-service serve",
+        "build": "vue-cli-service build",
+        "lint": "vue-cli-service lint"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@emailjs/browser": "^4.4.1",
+        "axios": "^1.7.9",
+        "bcrypt": "^5.0.1",
+        "body-parser": "^1.20.3",
+        "cors": "^2.8.5",
+        "ejs": "^3.1.6",
+        "express": "^4.21.2",
+        "express-formidable": "^1.2.0",
+        "express-session": "^1.17.1",
+        "fs": "0.0.1-security",
+        "http": "0.0.1-security",
+        "joi": "^17.13.3",
+        "mongodb": "^3.6.6",
+        "mongoose": "^8.8.4",
+        "node-cron": "^3.0.3",
+        "path": "^0.12.7",
+        "razorpay": "^2.9.5",
+        "uuid": "^11.0.3",
+        "vue": "^3.5.13"
+    },
+    "devDependencies": {
+        "@vue/cli-service": "^5.0.8",
+        "@vue/compiler-sfc": "^3.5.13",
+        "vue-loader": "^15.11.1",
+        "vue-template-compiler": "^2.7.16",
+        "webpack-bundle-analyzer": "^4.10.2"
+    }
+}

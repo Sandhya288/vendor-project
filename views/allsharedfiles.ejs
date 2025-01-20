@@ -1,0 +1,144 @@
+<%- include("includes/header", { "title": "Public Links" }) %>
+
+    <style>
+        /* General styling for the page */
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        /* Container for the table */
+        
+        .table-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 30px auto;
+            background: #ffffff;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        /* Title styling */
+        
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        /* Styling for the table */
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 16px;
+        }
+        
+        table th,
+        table td {
+            text-align: left;
+            padding: 12px 15px;
+        }
+        
+        table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        table tr:hover {
+            background-color: #ddd;
+        }
+        
+        table td {
+            border-bottom: 1px solid #ddd;
+        }
+        /* Responsive styling */
+        
+        @media (max-width: 768px) {
+            table {
+                font-size: 14px;
+            }
+            table th,
+            table td {
+                padding: 10px;
+            }
+        }
+    </style>
+
+    <div class="table-container">
+        <h1>Public Links</h1>
+
+        <!-- Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Uploaded By (Name)</th>
+                    <th>Uploaded By (Email)</th>
+                    <th>File Name</th>
+                    <th>File Size</th>
+                    <th>File Type</th>
+                    <th>Project Name</th>
+                    <th>Shared With</th>
+                    <th>File Path</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% public_links.forEach(u => { %>
+                    <% if (u.uploaded && u.uploaded.length > 0) { %>
+                        <% u.uploaded.forEach(file => { %>
+                            <tr>
+                                <td>
+                                    <%= u.uploadedBy ? u.uploadedBy.name : "Unknown" %>
+                                </td>
+                                <td>
+                                    <%= u.uploadedBy ? u.uploadedBy.email : "Unknown" %>
+                                </td>
+                                <td>
+                                    <%= file.name %>
+                                </td>
+                                <td>
+                                    <%= file.size %> bytes</td>
+                                <td>
+                                    <%= file.type %>
+                                </td>
+                                <td>
+                                    <%= file.projectName || "N/A" %>
+                                </td>
+                                <td>
+                                    <% if (file.sharedWith) { %>
+                                        <%= file.sharedWith.name %> (
+                                            <%= file.sharedWith.email %>)
+                                                <% } else { %>
+                                                    Not Shared
+                                                    <% } %>
+                                </td>
+                                <td>
+                                    <%= file.filePath %>
+                                </td>
+                            </tr>
+                            <% }) %>
+                                <% } else { %>
+                                    <tr>
+                                        <td>
+                                            <%= u.uploadedBy ? u.uploadedBy.name : "Unknown" %>
+                                        </td>
+                                        <td>
+                                            <%= u.uploadedBy ? u.uploadedBy.email : "Unknown" %>
+                                        </td>
+                                        <td colspan="6">No files uploaded.</td>
+                                    </tr>
+                                    <% } %>
+                                        <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+    <%- include("includes/footer") %>

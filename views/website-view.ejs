@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= website && website.name ? website.name : 'Website' %> - Website
+    </title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            position: relative;
+            font-family: 'Poppins', Arial, sans-serif;
+            background-color: #dde1e5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        
+        .navbar {
+            background-color: #200dc6;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: center;
+            position: sticky;
+            top: 0;
+            height: 30px;
+            z-index: 1000;
+            width: 100%;
+        }
+        
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+        
+        .website-container {
+            overflow-y: auto;
+            width: 100%;
+            max-width: 1200px;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+        
+        .website-header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #f1f1f1;
+            padding-bottom: 10px;
+        }
+        
+        .website-header h1 {
+            font-size: 2rem;
+            color: #007bff;
+        }
+        
+        .website-content {
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        
+        .website-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+        
+        .website-content p {
+            font-size: 1rem;
+            margin-bottom: 15px;
+            color: #777;
+            word-wrap: break-word;
+        }
+        
+        .website-content ul {
+            list-style-type: none;
+            margin-left: 0;
+            padding-left: 0;
+        }
+        
+        .website-content ul li {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: #444;
+        }
+        
+        .website-content a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .website-content a:hover {
+            text-decoration: underline;
+        }
+        
+        .project-card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        
+        .main {
+            background-image: url(https://img.freepik.com/free-vector/abstract-banner-with-low-poly-plexus-network-communications-design_1048-12914.jpg);
+            background-color: #f4f8fb;
+            background-position: center;
+            align-items: center;
+            text-align: center;
+            padding: 50px 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .project-card {
+            background-color: #f9fafb;
+            border: 1px solid #e0e0e0;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: calc(100% - 30px);
+            /* Default for small screens */
+            max-width: 300px;
+            transition: transform 0.3s;
+            background-color: #f0f9ff;
+        }
+        
+        @media (min-width: 481px) {
+            .project-card {
+                width: calc(45% - 15px);
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .project-card {
+                width: calc(28.333% - 15px);
+            }
+        }
+        
+        .project-card h4 {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .content-container {
+            background-image: url(https://img.freepik.com/premium-photo/deep-blue-gradient-background-with-faint-palm-leaf-silhouettes-creating-tranquil-sophisticated-visual-texture-peaceful-setting_1224371-4996.jpg?w=826);
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 0;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .content-container h1,
+        .content-container h3,
+        .content-container p {
+            color: white;
+        }
+        
+        .project-card p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .project-card a {
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #007bff;
+            text-decoration: none;
+        }
+        
+        .project-card a:hover {
+            text-decoration: underline;
+        }
+        
+        .action-buttons {
+            position: absolute;
+            z-index: 1000;
+            top: 10px;
+            right: 20px;
+        }
+        
+        .share-icon {
+            font-size: 2rem;
+            color: #ffffff;
+            cursor: pointer;
+            transition: color 0.3s, transform 0.3s;
+        }
+        
+        .share-icon:hover {
+            color: #218838;
+            transform: scale(1.2);
+        }
+        
+        .action-buttons button {
+            padding: 10px 15px;
+            font-size: 1rem;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            background-color: #28a745;
+        }
+        
+        .action-buttons button:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+        
+        .contact-container {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            align-items: center;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            margin-top: 15px;
+        }
+        
+        .contact-container h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .contact-container ul {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .contact-container ul li {
+            color: white;
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+        }
+        
+        .contact-container ul li .icon {
+            font-size: 1.5rem;
+            color: #007bff;
+            margin-right: 8px;
+        }
+        
+        .contact-container ul li .phone-icon {
+            color: #28a745;
+        }
+        
+        .contact-container ul li .linkedin-icon {
+            color: #0270ab;
+        }
+        
+        .contact-container ul li .github-icon {
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <a href="#about" onclick="showSection('about')">About</a>
+        <a href="#projects" onclick="showSection('projects')">Projects</a>
+        <a href="#contact" onclick="showSection('contact')">Contact</a>
+    </div>
+
+    <div class="website-container">
+        <% if (website && website.name) { %>
+
+            <div class="main">
+                <div class="content-container" id="about">
+                    <div class="website-header">
+                        <h1>
+                            <%= website.name %>
+                        </h1>
+                    </div>
+                    <div class="website-content">
+                        <% if (website.email) { %>
+                            <h3>Email:</h3>
+                            <p>
+                                <%= website.email %>
+                            </p>
+                            <% } else { %>
+                                <h3>Email:</h3>
+                                <p>Not provided</p>
+                                <% } %>
+
+                                    <% if (website.about) { %>
+                                        <h3> About:</h3>
+                                        <p>
+                                            <%= website.about %>
+                                        </p>
+                                        <% } else { %>
+                                            <h3>About:</h3>
+                                            <p>No description available.</p>
+                                            <% } %>
+                    </div>
+                </div>
+
+                <div class="content-container" id="projects">
+                    <h3>Projects:</h3>
+                    <div class="website-content">
+                        <div class="project-card-container">
+                            <% if (website.project1) { %>
+                                <div class="project-card">
+                                    <h4>
+                                        <%= website.project1 %>
+                                    </h4>
+                                    <a href="<%= website.project1Link || '#' %>" target="_blank">View Project</a>
+                                </div>
+                                <% } %>
+                                    <% if (website.project2) { %>
+                                        <div class="project-card">
+                                            <h4>
+                                                <%= website.project2 %>
+                                            </h4>
+                                            <a href="<%= website.project2Link || '#' %>" target="_blank">View Project</a>
+                                        </div>
+                                        <% } %>
+                                            <% if (website.project3) { %>
+                                                <div class="project-card">
+                                                    <h4>
+                                                        <%= website.project3 %>
+                                                    </h4>
+                                                    <a href="<%= website.project3Link || '#' %>" target="_blank">View Project</a>
+                                                </div>
+                                                <% } %>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-container" id="contact">
+                    <h3>Contact:</h3>
+                    <div class="contact-container">
+                        <ul>
+                            <% if (website.linkedin) { %>
+                                <li>
+                                    <i class="fas fa-linkedin linkedin-icon icon"></i> LinkedIn:
+                                    <a href="<%= website.linkedin %>" target="_blank">
+                                        <%= website.linkedin %>
+                                    </a>
+                                </li>
+                                <% } %>
+                                    <% if (website.github) { %>
+                                        <li>
+                                            <i class="fab fa-github github-icon icon"></i> GitHub:
+                                            <a href="<%= website.github %>" target="_blank">
+                                                <%= website.github %>
+                                            </a>
+                                        </li>
+                                        <% } %>
+                                            <% if (website.contactno) { %>
+                                                <li>
+                                                    <i class="fas fa-phone-alt phone-icon icon"></i> Contact No:
+                                                    <%= website.contactno %>
+                                                </li>
+                                                <% } else { %>
+                                                    <li>
+                                                        <i class="fas fa-phone-alt phone-icon icon"></i> Contact No: Not provided
+                                                    </li>
+                                                    <% } %>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <i class="fas fa-share-alt share-icon" onclick="shareWebsite('<%= website._id %>')" title="Share Link"></i>
+            </div>
+
+            <% } else { %>
+                <div class="website-header">
+                    <h1>Website not found</h1>
+                </div>
+                <p>The website you are looking for does not exist or has been removed.</p>
+                <% } %>
+    </div>
+
+    <script>
+        function shareWebsite(id) {
+            const websiteLink = `${window.location.origin}/website/view/${id}`;
+            navigator.clipboard.writeText(websiteLink).then(() => {
+                alert('Link copied to clipboard!');
+            }).catch((err) => {
+                console.error('Error copying link:', err);
+                alert('Failed to copy the link.');
+            });
+        }
+
+        function showSection(section) {
+            const sections = document.querySelectorAll('.content-container');
+            sections.forEach((el) => {
+                el.style.display = 'none'; // Hide all sections
+            });
+
+            const activeSection = document.getElementById(section);
+            activeSection.style.display = 'block'; // Show the selected section
+        }
+
+        // Show the 'About' section by default
+        showSection('about');
+    </script>
+</body>
+
+</html>

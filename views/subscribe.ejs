@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            background-color: #f4f8fb;
+            color: #333;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        .subscription-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .subscription-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .subscription-card h2 {
+            font-size: 1.8rem;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        
+        .subscription-card p {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .subscription-card .price {
+            font-size: 2rem;
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+        
+        .subscription-card input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .subscription-card button {
+            padding: 12px 20px;
+            font-size: 1rem;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        
+        .subscription-card button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="subscription-card">
+        <h2>Premium Plan</h2>
+        <p>Enjoy unlimited access to all features with our Premium Plan.</p>
+        <div class="price">Rs.499/month</div>
+
+        <input type="email" id="email" placeholder="Enter your email" required>
+        <input type="tel" id="contact" placeholder="Enter your contact number" required>
+        <button id="subscribe-btn">Subscribe Now</button>
+    </div>
+
+    <script>
+        document.getElementById('subscribe-btn').addEventListener('click', function() {
+            var email = document.getElementById('email').value;
+            var contact = document.getElementById('contact').value;
+
+            if (!email || !contact) {
+                alert("Please fill in both email and contact number.");
+                return;
+            }
+
+            fetch('/create-order', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    var options = {
+                        "key": "rzp_test_hKRDLdPGnrDgjY", // Correct Razorpay key
+                        "amount": data.amount, // Amount in paise
+                        "currency": "INR",
+                        "name": "Your Company Name",
+                        "description": "Premium Plan Subscription",
+                        "order_id": data.orderId, // Order ID from backend
+                        "handler": function(response) {
+                            fetch("/payments/success", {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    body: JSON.stringify({
+                                        userId: data.userId, // Fetch dynamically or from session
+                                        payment_id: response.razorpay_payment_id,
+                                        order_id: response.razorpay_order_id,
+                                        razorpay_signature: response.razorpay_signature
+                                    })
+                                })
+                                .then(res => res.json())
+                                .then(data => {
+                                    alert("Payment successful. Subscription extended.");
+                                })
+                                .catch(error => {
+                                    console.error("Error:", error);
+                                    alert("Payment failed. Please try again.");
+                                });
+                        },
+                        "prefill": {
+                            "name": "", // You can add user name here if needed
+                            "email": email,
+                            "contact": contact
+                        },
+                        "theme": {
+                            "color": "#007bff"
+                        }
+                    };
+
+                    var rzp1 = new Razorpay(options);
+                    rzp1.open();
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("Failed to initiate payment. Please try again.");
+                });
+        });
+    </script>
+
+</body>
+
+</html>

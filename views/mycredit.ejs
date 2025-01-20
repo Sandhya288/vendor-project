@@ -1,0 +1,191 @@
+<%- include("includes/header", {
+    "title": "My Credit"
+}) %>
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>My Credit</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f4;
+            }
+            
+            .container {
+                width: 100%;
+                max-width: 600px;
+                margin: 50px auto;
+                padding: 20px;
+                background: #fff;
+                border-radius: 8px;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            }
+            
+            h1 {
+                text-align: center;
+                margin-bottom: 20px;
+                color: #333;
+            }
+            
+            .balance {
+                text-align: center;
+                font-size: 20px;
+                font-weight: bold;
+                margin-bottom: 20px;
+            }
+            
+            form {
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 30px;
+            }
+            
+            input,
+            button {
+                margin-bottom: 15px;
+                padding: 10px;
+                font-size: 16px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+            
+            button {
+                background-color: #007bff;
+                color: #fff;
+                border: none;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+            
+            button:hover {
+                background-color: #0056b3;
+            }
+            
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+            
+            table th,
+            table td {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: left;
+            }
+            
+            table th {
+                background-color: #f2f2f2;
+                text-transform: uppercase;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>My Credit</h1>
+
+            <!-- Current Balance -->
+            <div class="balance">
+                Current Balance: ₹
+                <%= currentBalance.toFixed(2) %>
+            </div>
+
+            <!-- Add Money Form -->
+            <form method="POST" action="/mycredit">
+                <input type="number" name="amount" placeholder="Enter Amount" required />
+                <input type="text" name="purpose" placeholder="Enter Purpose" required />
+
+                <select name="transactionType" id="transactionType" required>
+                    <option value="Credit">Credit</option>
+                    <option value="Debit">Debit</option>
+                </select>
+
+                <input type="text" name="reason" id="reason" placeholder="Enter Reason or Recipient" style="display:none;" />
+
+                <button type="submit">Submit</button>
+            </form>
+
+
+            <!-- Transaction History Grouped by Purpose -->
+            <!-- Transaction History Grouped by Purpose -->
+            <h2>Transaction History</h2>
+            <% 
+            // Group transactions by purpose
+            const groupedTransactions = transactions.reduce((groups, txn) => {
+                (groups[txn.purpose] = groups[txn.purpose] || []).push(txn);
+                return groups;
+            }, {});
+            
+            // Calculate totals for each purpose
+            const totals = {};
+            Object.keys(groupedTransactions).forEach(function(purpose) {
+                totals[purpose] = groupedTransactions[purpose].reduce((sum, txn) => {
+                    return txn.type === 'Credit' ? sum + txn.amount : sum - txn.amount;
+                }, 0);
+            });
+            %>
+
+                <!-- Render each group -->
+                <% Object.keys(groupedTransactions).forEach(function(purpose) { %>
+                    <h3>
+                        <%= purpose %> - Total: ₹
+                            <%= totals[purpose].toFixed(2) %>
+                    </h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Amount</th>
+                                <th>Type</th>
+                                <th>Date</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% groupedTransactions[purpose].forEach(function (txn) { %>
+                                <tr>
+                                    <td>₹
+                                        <%= txn.amount.toFixed(2) %>
+                                    </td>
+                                    <td>
+                                        <%= txn.type %>
+                                    </td>
+                                    <td>
+                                        <%= new Date(txn.date).toLocaleDateString() %>
+                                    </td>
+                                    <td>
+                                        <% if (txn.type === 'Debit') { %>
+                                            Debit -
+                                            <%= txn.reason ? txn.reason : 'N/A' %>
+                                                <% } else { %>
+                                                    N/A
+                                                    <% } %>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                        </tbody>
+                    </table>
+                    <% }) %>
+
+        </div>
+    </body>
+
+    <script>
+        // Show the reason field only if "Debit" is selected
+        document.getElementById('transactionType').addEventListener('change', function() {
+            const reasonField = document.getElementById('reason');
+            if (this.value === 'Debit') {
+                reasonField.style.display = 'block';
+            } else {
+                reasonField.style.display = 'none';
+            }
+        });
+    </script>
+
+    </html>
+    <%- include("includes/footer") %>

@@ -1,0 +1,142 @@
+<%- include("includes/header", {
+    "title": "Notes"
+}) %>
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Notes</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f4;
+            }
+            
+            .container {
+                width: 100%;
+                max-width: 800px;
+                margin: 50px auto;
+                padding: 20px;
+                background: #fff;
+                border-radius: 8px;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            }
+            
+            h1 {
+                text-align: center;
+                margin-bottom: 20px;
+                color: #333;
+            }
+            
+            .balance {
+                text-align: center;
+                font-size: 20px;
+                font-weight: bold;
+                margin-bottom: 20px;
+            }
+            
+            form {
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 30px;
+            }
+            
+            input,
+            button {
+                margin-bottom: 15px;
+                padding: 10px;
+                font-size: 16px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+            
+            button {
+                background-color: #007bff;
+                color: #fff;
+                border: none;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+            
+            button:hover {
+                background-color: #0056b3;
+            }
+            
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+            
+            table th,
+            table td {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: left;
+            }
+            
+            table th {
+                background-color: #f2f2f2;
+                text-transform: uppercase;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>Notes Form</h1>
+
+            <!-- Current Balance -->
+            <div class="balance">
+                Current Balance: ₹
+                <%= currentBalance.toFixed(2) %>
+            </div>
+
+            <!-- Notes Form -->
+            <form method="POST" action="/notes">
+                <input type="text" name="name" placeholder="Enter Name" required />
+                <input type="number" name="paid" placeholder="Enter Paid Amount" required />
+                <input type="text" name="purpose" placeholder="Enter Purpose" required />
+                <button type="submit">Submit Note</button>
+            </form>
+
+            <!-- Notes List Grouped by Purpose -->
+            <h2>Your Notes</h2>
+            <% if (Object.keys(notesByPurpose).length > 0) { %>
+                <% for (const purpose in notesByPurpose) { %>
+                    <h3>Purpose:
+                        <%= purpose %> (Total: ₹
+                            <%= notesByPurpose[purpose].total.toFixed(2) %>)</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Paid</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% notesByPurpose[purpose].notes.forEach(function(note) { %>
+                                <tr>
+                                    <td>
+                                        <%= note.name %>
+                                    </td>
+                                    <td>₹
+                                        <%= note.paid.toFixed(2) %>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                        </tbody>
+                    </table>
+                    <% } %>
+                        <% } else { %>
+                            <p style="text-align: center;">No notes found.</p>
+                            <% } %>
+
+    </body>
+
+    </html>
+    <%- include("includes/footer") %>

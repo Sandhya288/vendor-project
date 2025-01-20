@@ -1,0 +1,180 @@
+<%- include("includes/header", {
+    "title": "All Stores"
+}) %>
+
+    <style>
+        /* General page styling */
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        /* Container for the table - Ensuring it's centered horizontally */
+        
+        .table-container {
+            width: 80%;
+            max-width: 1200px;
+            margin: 30px auto;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+        }
+        /* Table styling */
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        table th,
+        table td {
+            padding: 12px 15px;
+            text-align: left;
+        }
+        
+        table th {
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+        }
+        
+        table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        table tr:hover {
+            background-color: #ddd;
+        }
+        
+        table td {
+            font-size: 14px;
+        }
+        /* Table Header */
+        
+        table th {
+            border-bottom: 2px solid #ddd;
+        }
+        /* Adding some space between the header and content */
+        
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+            margin-top: 20px;
+            font-size: 28px;
+        }
+        /* Search bar styling */
+        
+        .search-bar {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .search-bar input {
+            padding: 10px;
+            font-size: 16px;
+            width: 300px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+        }
+        /* Responsive styling - Adjusting for smaller screens */
+        
+        @media (max-width: 768px) {
+            table {
+                font-size: 12px;
+            }
+            table th,
+            table td {
+                padding: 10px;
+            }
+            .search-bar input {
+                width: 80%;
+            }
+        }
+    </style>
+
+    <div class="table-container">
+        <h1>All Stores</h1>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" id="searchLocation" placeholder="Search by Store Name" oninput="filterTable()">
+        </div>
+
+        <!-- Table -->
+        <table id="profileTable">
+            <thead>
+                <tr>
+                    <th>Store Name</th>
+                    <th>Contact Details</th>
+                    <th>Address</th>
+                    <th>Product Name</th>
+                    <th>Availability</th>
+                    <th>Stock</th>
+                    <th>Amount</th>
+                    <th>Created Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% store.forEach(s => { %>
+                    <tr>
+                        <td>
+                            <%= s.storeName %>
+                        </td>
+                        <td>
+                            <%= s.contactDetails %>
+                        </td>
+                        <td>
+                            <%= s.address %>
+                        </td>
+                        <td>
+                            <%= s.product %>
+                        </td>
+                        <td>
+                            <%= s.availability %>
+                        </td>
+                        <td>
+                            <%= s.stock %>
+                        </td>
+                        <td>
+                            <%= s.amount %>
+                        </td>
+                        <td>
+                            <%= s.createdAt %>
+                        </td>
+                    </tr>
+                    <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Function to filter the table based on input text
+        function filterTable() {
+            const searchValue = document.getElementById('searchLocation').value.toLowerCase();
+            const table = document.getElementById('profileTable');
+            const rows = table.getElementsByTagName('tr');
+
+            // Loop through all rows, except for the header
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                const storeNameCell = row.getElementsByTagName('td')[0]; // Store Name column (index 0)
+
+                if (storeNameCell) {
+                    const storeName = storeNameCell.textContent || storeNameCell.innerText;
+                    if (storeName.toLowerCase().includes(searchValue)) {
+                        row.style.display = ''; // Show the row
+                    } else {
+                        row.style.display = 'none'; // Hide the row
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+    <%- include("includes/footer") %>

@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing Form (9 Items)</title>
+    <style>
+        /* Basic styling for a clean, modern look */
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        .billing-form-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 700px;
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+        
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+        
+        input,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        .item-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .item-row textarea {
+            flex: 3;
+            resize: none;
+        }
+        
+        .item-row input {
+            flex: 1;
+        }
+        
+        .item-row button {
+            flex: 0.5;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        
+        .item-row button:hover {
+            background-color: #d32f2f;
+        }
+        
+        .total-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .hight {
+            height: 150px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="billing-form-container" id="billing-info">
+        <h2>Billing Information</h2>
+        <form id="billing-form" method="post" onsubmit="submitBillingForm(event)">
+            <!-- Invoice Number (Auto-generated) -->
+            <label for="invoice-number">Invoice Number:</label>
+            <input type="text" name="invoice_number" id="invoice-number" required><br>
+
+            <!-- Customer Name -->
+            <label for="customer_name">Customer Name:</label>
+            <input type="text" name="customer_name" required><br>
+
+            <!-- Customer Email -->
+            <label for="customer_email">Customer Email:</label>
+            <input type="email" name="customer_email" required><br>
+
+            <!-- Items -->
+            <div id="items-container">
+                <!-- First Item -->
+                <div class="item-row">
+                    <textarea class="hight" name="items[0][description]" required>1. Earth excavation in hard soil for foundation trenches including supplying of all materials, labours etc. complete.</textarea>
+                    <input type="number" name="items[0][length]" placeholder="Length" required oninput="updateQuantity(0)">
+                    <input type="number" name="items[0][breadth]" placeholder="Breadth" required oninput="updateQuantity(0)">
+                    <input type="number" name="items[0][depth]" placeholder="Depth" required oninput="updateQuantity(0)">
+                    <input type="number" name="items[0][price]" placeholder="Price (₹)" required oninput="updateTotal()">
+                    <input type="number" name="items[0][quantity]" placeholder="Quantity" readonly>
+                    <button type="button" onclick="removeItem(this)">Remove</button>
+                </div>
+
+                <!-- Second Item -->
+                <div class="item-row">
+                    <textarea class="hight" name="items[1][description]" required>2. Bed concrete of 1:4:8 P.C.C with 1½” gr. Jelly including supplying of all materials, labours, mixing, laying, compacting and curing etc. complete.
+                    </textarea>
+                    <input type="number" name="items[1][length]" placeholder="Length" required oninput="updateQuantity(1)">
+                    <input type="number" name="items[1][breadth]" placeholder="Breadth" required oninput="updateQuantity(1)">
+                    <input type="number" name="items[1][depth]" placeholder="Depth" required oninput="updateQuantity(1)">
+                    <input type="number" name="items[1][price]" placeholder="Price (₹)" required oninput="updateTotal()">
+                    <input type="number" name="items[1][quantity]" placeholder="Quantity" readonly>
+                    <button type="button" onclick="removeItem(this)">Remove</button>
+                </div>
+                <div class="item-row">
+                    <textarea class="hight" name="items[2][description]" required>3. Foundation of dressed Granite stone masonry in C.M. 1:5 including supplying of all materials, labours and curing etc. complete.
+</textarea>
+                    <input type="number" name="items[2][length]" placeholder="Length" required oninput="updateQuantity(2)">
+                    <input type="number" name="items[2][breadth]" placeholder="Breadth" required oninput="updateQuantity(2)">
+                    <input type="number" name="items[2][depth]" placeholder="Depth" required oninput="updateQuantity(2)">
+                    <input type="number" name="items[2][price]" placeholder="Price (₹)" required oninput="updateTotal()">
+                    <input type="number" name="items[2][quantity]" placeholder="Quantity" readonly>
+                    <button type="button" onclick="removeItem(this)">Remove</button>
+                </div>
+                <div class="item-row">
+                    <textarea class="hight" name="items[3][description]" required>4.  Earth filling with available and arranged earth including filling, watering and consolidating etc. complete.
+                    </textarea>
+                    <input type="number" name="items[3][length]" placeholder="Length" required oninput="updateQuantity(3)">
+                    <input type="number" name="items[3][breadth]" placeholder="Breadth" required oninput="updateQuantity(3)">
+                    <input type="number" name="items[3][depth]" placeholder="Depth" required oninput="updateQuantity(3)">
+                    <input type="number" name="items[3][price]" placeholder="Price (₹)" required oninput="updateTotal()">
+                    <input type="number" name="items[3][quantity]" placeholder="Quantity" readonly>
+                    <button type="button" onclick="removeItem(this)">Remove</button>
+                </div>
+                <div class="item-row">
+                    <textarea class="hight" name="items[4][description]" required>5. 1:2:4 R.C.C work with ¾” gr. jelly to be reinforced with torsteel as per structural design including supplying of all materials, bar cutting, bending, tying centring and curing etc.complete.
+                    </textarea>
+                    <input type="number" name="items[4][length]" placeholder="Length" required oninput="updateQuantity(4)">
+                    <input type="number" name="items[4][breadth]" placeholder="Breadth" required oninput="updateQuantity(4)">
+                    <input type="number" name="items[4][depth]" placeholder="Depth" required oninput="updateQuantity(4)">
+                    <input type="number" name="items[4][price]" placeholder="Price (₹)" required oninput="updateTotal()">
+                    <input type="number" name="items[4][quantity]" placeholder="Quantity" readonly>
+                    <button type="button" onclick="removeItem(this)">Remove</button>
+                </div>
+                <div class="item-row">
+                    <textarea class="hight" name="items[5][description]" required>6. Superstructure of 9" Laterite wall masonry in C.M 1:6 including supplying of all materials, labours, scaffolding and curing etc. complete.
+                    </textarea>
+                    <input type="number" name="items[5][length]" placeholder="Length" required oninput="updateQuantity(5)">
+                    <input type="number" name="items[5][breadth]" placeholder="Breadth" required oninput="updateQuantity(5)">
+                    <input type="number" name="items[5][depth]" placeholder="Depth" required oninput="updateQuantity(5)">
+                    <input type="number" name="items[5][price]" placeholder="Price (₹)" required oninput="updateTotal()">
+                    <input type="number" name="items[5][quantity]" placeholder="Quantity" readonly>
+                    <button type="button" onclick="removeItem(this)">Remove</button>
+                </div>
+                <div class="item-row">
+                    <textarea class="hight" name="items[6][description]" required>7. Inside Wall plastering in C.M 1:6 with sieved sand, 12mm thick and top to be finished smooth with lime slurry including supplying of all materials, labours, scaffolding and curing etc. complete.</textarea>
+                    <input type="number" name="items[6][length]" placeholder="Length" required oninput="updateQuantity(6)">
+                    <input type="number" name="items[6][breadth]" placeholder="Breadth" required oninput="updateQuantity(6)">
+                    <input type="number" name="items[6][depth]" placeholder="Depth" required oninput="updateQuantity(6)">
+                    <input type="number" name="items[6][price]" placeholder="Price (₹)" required oninput="updateTotal()">
+                    <input type="number" name="items[6][quantity]" placeholder="Quantity" readonly>
+                    <button type="button" onclick="removeItem(this)">Remove</button>
+                </div>
+                <div class="item-row">
+                    <textarea class="hight" name="items[7][description]" required>8. Ceiling plastering in C.M 1:3 with sieved sand, 12mm thick and top to be finished smooth with lime slurry including supplying of all materials, labours, scaffolding and curing etc. complete.
+                    </textarea>
+                    <input type="number" name="items[7][length]" placeholder="Length" required oninput="updateQuantity(7)">
+                    <input type="number" name="items[7][breadth]" placeholder="Breadth" required oninput="updateQuantity(7)">
+                    <input type="number" name="items[7][depth]" placeholder="Depth" required oninput="updateQuantity(7)">
+                    <input type="number" name="items[7][price]" placeholder="Price (₹)" required oninput="updateTotal()">
+                    <input type="number" name="items[7][quantity]" placeholder="Quantity" readonly>
+                    <button type="button" onclick="removeItem(this)">Remove</button>
+                </div>
+                <div class="item-row">
+                    <textarea class="hight" name="items[8][description]" required>9. Outside wal plastering in C.M 1:6 with sieved sand, 12mm thick and top to be finished smooth with lime slurry including supplying of all materials, labours, scaffolding and curing etc. complete.</textarea>
+                    <input type="number" name="items[8][length]" placeholder="Length" required oninput="updateQuantity(8)">
+                    <input type="number" name="items[8][breadth]" placeholder="Breadth" required oninput="updateQuantity(8)">
+                    <input type="number" name="items[8][depth]" placeholder="Depth" required oninput="updateQuantity(8)">
+                    <input type="number" name="items[8][price]" placeholder="Price (₹)" required oninput="updateTotal()">
+                    <input type="number" name="items[8][quantity]" placeholder="Quantity" readonly>
+                    <button type="button" onclick="removeItem(this)">Remove</button>
+                </div>
+                <div class="item-row">
+                    <textarea class="hight" name="items[9][description]" required>10. Vitrified Flooring for all rooms in 1:3 top to be finished including supplying of all materials, labours etc. complete.
+                    </textarea>
+                    <input type="number" name="items[9][length]" placeholder="Length" required oninput="updateQuantity(9)">
+                    <input type="number" name="items[9][breadth]" placeholder="Breadth" required oninput="updateQuantity(9)">
+                    <input type="number" name="items[9][depth]" placeholder="Depth" required oninput="updateQuantity(9)">
+                    <input type="number" name="items[9][price]" placeholder="Price (₹)" required oninput="updateTotal()">
+                    <input type="number" name="items[9][quantity]" placeholder="Quantity" readonly>
+                    <button type="button" onclick="removeItem(this)">Remove</button>
+                </div>
+                <div class="item-row">
+                    <textarea class="hight" name="items[10][description]" required>11. Ceiling white washing (2 coats) including supplying of all materials, labourers, scaffolding etc. complete.</textarea>
+                    <input type="number" name="items[10][length]" placeholder="Length" required oninput="updateQuantity(10)">
+                    <input type="number" name="items[10][breadth]" placeholder="Breadth" required oninput="updateQuantity(10)">
+                    <input type="number" name="items[10][depth]" placeholder="Depth" required oninput="updateQuantity(10)">
+                    <input type="number" name="items[10][price]" placeholder="Price (₹)" required oninput="updateTotal()">
+                    <input type="number" name="items[10][quantity]" placeholder="Quantity" readonly>
+                    <button type="button" onclick="removeItem(this)">Remove</button>
+                </div>
+                <div class="item-row">
+                    <textarea class="hight" name="items[11][description]" required>12. Inside plastered wall surface colour washing over a coat of white wash including supplying of all materials, labours, scaffolding etc. complete.</textarea>
+                    <input type="number" name="items[11][length]" placeholder="Length" required oninput="updateQuantity(11)">
+                    <input type="number" name="items[11][breadth]" placeholder="Breadth" required oninput="updateQuantity(11)">
+                    <input type="number" name="items[11][depth]" placeholder="Depth" required oninput="updateQuantity(11)">
+                    <input type="number" name="items[11][price]" placeholder="Price (₹)" required oninput="updateTotal()">
+                    <input type="number" name="items[11][quantity]" placeholder="Quantity" readonly>
+                    <button type="button" onclick="removeItem(this)">Remove</button>
+                </div>
+                <div class="item-row">
+                    <textarea class="hight" name="items[12][description]" required>13. Outer side plastered wall surface colour washing over a coat of white wash including supplying of all materials, labours, scaffolding etc. complete.</textarea>
+                    <input type="number" name="items[12][length]" placeholder="Length" required oninput="updateQuantity(12)">
+                    <input type="number" name="items[12][breadth]" placeholder="Breadth" required oninput="updateQuantity(12)">
+                    <input type="number" name="items[12][depth]" placeholder="Depth" required oninput="updateQuantity(12)">
+                    <input type="number" name="items[12][price]" placeholder="Price (₹)" required oninput="updateTotal()">
+                    <input type="number" name="items[12][quantity]" placeholder="Quantity" readonly>
+                    <button type="button" onclick="removeItem(this)">Remove</button>
+                </div>
+                <div class="item-row">
+                    <textarea class="hight" name="items[13][description]" required>14. Front main door of best quality wild jack wood designed frames with jack wood designed panelled shutters including supplying of all materials, labours fixing with all fixtures etc. complete.</textarea>
+                    <input type="number" name="items[13][length]" placeholder="Length" required oninput="updateQuantity(13)">
+                    <input type="number" name="items[13][breadth]" placeholder="Breadth" required oninput="updateQuantity(13)">
+                    <input type="number" name="items[13][depth]" placeholder="Depth" required oninput="updateQuantity(13)">
+                    <input type="number" name="items[13][price]" placeholder="Price (₹)" required oninput="updateTotal()">
+                    <input type="number" name="items[13][quantity]" placeholder="Quantity" readonly>
+                    <button type="button" onclick="removeItem(this)">Remove</button>
+                </div>
+                <div class="item-row">
+                    <textarea class="hight" name="items[14][description]" required>15. Door & windows of best quality country wood frames and shutters including supplying labours fixing with all fixtures etc. complete.</textarea>
+                    <input type="number" name="items[14][length]" placeholder="Length" required oninput="updateQuantity(14)">
+                    <input type="number" name="items[14][breadth]" placeholder="Breadth" required oninput="updateQuantity(14)">
+                    <input type="number" name="items[14][depth]" placeholder="Depth" required oninput="updateQuantity(14)">
+                    <input type="number" name="items[14][price]" placeholder="Price (₹)" required oninput="updateTotal()">
+                    <input type="number" name="items[14][quantity]" placeholder="Quantity" readonly>
+                    <button type="button" onclick="removeItem(this)">Remove</button>
+                </div>
+                <div class="item-row">
+                    <textarea class="hight" name="items[15][description]" required>16. Providing and Laying Toilet wall & floor tiles in 1:3 to be finished include supplying of all materials, labours curing etc. complete.</textarea>
+                    <input type="number" name="items[15][length]" placeholder="Length" required oninput="updateQuantity(15)">
+                    <input type="number" name="items[15][breadth]" placeholder="Breadth" required oninput="updateQuantity(15)">
+                    <input type="number" name="items[15][depth]" placeholder="Depth" required oninput="updateQuantity(15)">
+                    <input type="number" name="items[15][price]" placeholder="Price (₹)" required oninput="updateTotal()">
+                    <input type="number" name="items[15][quantity]" placeholder="Quantity" readonly>
+                    <button type="button" onclick="removeItem(this)">Remove</button>
+                </div>
+            </div>
+
+            <div class="total-container">
+                <span><strong>Total Amount:</strong></span>
+                <span id="total-amount">₹0</span>
+            </div>
+
+            <button type="submit">Submit Billing Information</button>
+        </form>
+    </div>
+
+    <script>
+        function updateQuantity(itemIndex) {
+            const length = document.querySelector(`input[name="items[${itemIndex}][length]"]`).value;
+            const breadth = document.querySelector(`input[name="items[${itemIndex}][breadth]"]`).value;
+            const depth = document.querySelector(`input[name="items[${itemIndex}][depth]"]`).value;
+
+            // Calculate quantity as Length x Breadth x Depth
+            const quantity = length * breadth * depth;
+
+            // Update the quantity field
+            document.querySelector(`input[name="items[${itemIndex}][quantity]"]`).value = quantity;
+
+            updateTotal();
+        }
+
+        function submitBillingForm(event) {
+            event.preventDefault();
+
+            // Collect form data and prepare it for printing
+            const formData = new FormData(event.target);
+            let printableContent = '<h2>Billing Information</h2>';
+
+            // Add invoice details
+            printableContent += `<p><strong>Invoice Number:</strong> ${formData.get('invoice_number')}</p>`;
+            printableContent += `<p><strong>Customer Name:</strong> ${formData.get('customer_name')}</p>`;
+            printableContent += `<p><strong>Customer Email:</strong> ${formData.get('customer_email')}</p>`;
+
+            // Create table for items
+            printableContent += `<table><thead><tr><th>Description</th><th>Length</th><th>Breadth</th><th>Depth</th><th>Quantity</th><th>Price (₹)</th><th>Total (₹)</th></tr></thead><tbody>`;
+
+            let itemIndex = 0;
+            formData.forEach((value, key) => {
+                if (key.startsWith('items')) {
+                    const itemId = key.split('[')[1].split(']')[0]; // Extract item index
+                    if (key.includes('description')) {
+                        printableContent += `<tr><td>${value}</td>`;
+                    }
+                    if (key.includes('length')) {
+                        const length = value;
+                        const breadth = formData.get(`items[${itemId}][breadth]`);
+                        const depth = formData.get(`items[${itemId}][depth]`);
+                        const quantity = length * breadth * depth;
+                        printableContent += `<td>${length}</td><td>${breadth}</td><td>${depth}</td><td>${quantity}</td>`;
+                    }
+                    if (key.includes('price')) {
+                        const price = value;
+                        const total = price * formData.get(`items[${itemId}][quantity]`);
+                        printableContent += `<td>₹${price}</td><td>₹${total.toFixed(2)}</td></tr>`;
+                    }
+                }
+            });
+
+            printableContent += `</tbody></table>`;
+
+            // Add total amount
+            printableContent += `<p><strong>Total Amount:</strong> ₹${document.getElementById('total-amount').innerText.replace('₹', '')}</p>`;
+
+            // Create a new window for printing
+            const printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write('<html><head><title>Billing Information</title></head><body>');
+            printWindow.document.write(printableContent);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        function updateTotal() {
+            let totalAmount = 0;
+
+            // Iterate through all items and calculate the total
+            document.querySelectorAll('.item-row').forEach(function(itemRow) {
+                const quantity = itemRow.querySelector('input[name$="[quantity]"]').value || 0;
+                const price = itemRow.querySelector('input[name$="[price]"]').value || 0;
+
+                totalAmount += quantity * price;
+            });
+
+            document.getElementById('total-amount').innerText = `₹${totalAmount.toFixed(2)}`;
+        }
+
+        function removeItem(button) {
+            button.closest('.item-row').remove();
+            updateTotal();
+        }
+    </script>
+</body>
+
+</html>

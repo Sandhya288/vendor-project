@@ -1,0 +1,323 @@
+<%- include("includes/header", { "title": "Summary" }) %>
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Summary</title>
+        <style>
+            /* General Reset */
+            /* General Reset */
+            
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            
+            body {
+                font-family: 'Poppins', Arial, sans-serif;
+                background-color: #f8f9fa;
+                color: #212529;
+            }
+            /* Container */
+            
+            .container {
+                max-width: 1200px;
+                margin: 40px auto;
+                padding: 20px;
+                background-color: #ffffff;
+                border-radius: 8px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                overflow-x: auto;
+                /* Prevents overflow */
+            }
+            /* Heading */
+            
+            h1 {
+                text-align: center;
+                font-size: 2rem;
+                margin-bottom: 20px;
+                color: #007bff;
+            }
+            /* Form Section */
+            
+            form {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                margin-bottom: 20px;
+            }
+            
+            #form-container {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 20px;
+            }
+            /* Input Fields */
+            
+            input {
+                font-size: 1rem;
+                padding: 10px;
+                border: 1px solid #ced4da;
+                border-radius: 4px;
+                width: 100%;
+                transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            }
+            
+            input:focus {
+                border-color: #007bff;
+                outline: none;
+                box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            }
+            /* Button Styles */
+            
+            button {
+                font-size: 0.9rem;
+                padding: 8px 15px;
+                border: none;
+                border-radius: 4px;
+                background-color: #007bff;
+                color: white;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+                width: 150px;
+                /* Minimized button width */
+                white-space: nowrap;
+                /* Prevent button text wrapping */
+            }
+            
+            button:hover {
+                background-color: #0056b3;
+            }
+            /* Success and Error Messages */
+            
+            .success-message,
+            .error-message {
+                text-align: center;
+                font-weight: bold;
+                padding: 15px;
+                margin-bottom: 20px;
+                border-radius: 4px;
+                font-size: 1rem;
+            }
+            
+            .success-message {
+                color: #155724;
+                background-color: #d4edda;
+                border: 1px solid #c3e6cb;
+            }
+            
+            .error-message {
+                color: #721c24;
+                background-color: #f8d7da;
+                border: 1px solid #f5c6cb;
+            }
+            /* Table Styling */
+            
+            .table-container {
+                margin-top: 20px;
+            }
+            
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10px;
+                font-size: 0.95rem;
+            }
+            
+            table th,
+            table td {
+                padding: 10px 15px;
+                text-align: left;
+                border: 1px solid #dee2e6;
+            }
+            
+            table th {
+                background-color: #f1f1f1;
+                font-weight: bold;
+                text-transform: uppercase;
+            }
+            
+            table tr:nth-child(even) {
+                background-color: #f9f9f9;
+            }
+            
+            h2 {
+                font-size: 25px;
+            }
+            
+            table tr:hover {
+                background-color: #f1f5ff;
+            }
+            /* No Data Message */
+            
+            .no-data {
+                text-align: center;
+                color: #868e96;
+                font-style: italic;
+                padding: 20px;
+            }
+            /* Table Actions */
+            
+            .save,
+            .delete {
+                padding: 5px 10px;
+                font-size: 0.8rem;
+                margin: 0 5px;
+                width: 60px;
+            }
+            
+            .delete {
+                background-color: #dc3545;
+                color: white;
+            }
+            
+            .delete:hover {
+                background-color: #c82333;
+            }
+            /* Responsive Design */
+            
+            @media (max-width: 768px) {
+                #form-container {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>Summary Form</h1>
+
+            <!-- Display success or error messages -->
+
+            <!-- Vendor Form -->
+            <form method="POST" action="/summary">
+
+
+                <div id="form-container">
+                    <input type="text" name="masterBedroom" placeholder="Enter masterBedroom" required />
+                    <input type="text" name="attachedBathroom" placeholder="Enter attachedBathroom" required />
+                    <input type="text" name="bedroom2" placeholder="Enter bedroom2" required />
+
+                    <input type="text" name="commonBathroom" placeholder="Enter commonBathroom" required />
+                    <input type="text" name="livingRoom" placeholder="Enter livingRoom" required />
+                    <input type="text" name="kitchen" placeholder="Enter kitchen" required />
+                    <input type="text" name="diningSpace" placeholder="Enter diningSpace" />
+                    <input type="text" name="utilityArea" placeholder="Enter utilityArea" />
+                    <input type="text" name="porch" placeholder="Enter porch" />
+                    <input type="text" name="sitout" placeholder="Enter sitout" />
+                </div>
+
+                <button type="submit">Get Summary</button>
+            </form>
+
+            <!-- Vendor List -->
+            <!-- Display summary if available -->
+
+            <div class="container">
+                <h1>Floor Plan Summary</h1>
+
+
+
+                <% if (summary) { %>
+                    <div class="section">
+                        <h2>Master Bedroom:</h2>
+                        <p>The <span class="highlight">Master Bedroom</span> is a spacious area designed for comfort, measuring
+                            <%= summary.masterBedroom %>. This room includes an attached bathroom for convenience.</p>
+                    </div>
+
+                    <div class="section">
+                        <h2>Attached Bathroom:</h2>
+                        <p>The <span class="highlight">Attached Bathroom</span> adjacent to the master bedroom measures
+                            <%= summary.attachedBathroom %>, providing privacy and accessibility.</p>
+                    </div>
+
+                    <div class="section">
+                        <h2>Bedroom 2:</h2>
+                        <p><span class="highlight">Bedroom 2</span> is a cozy space, ideal for guests or family members, with dimensions of
+                            <%= summary.bedroom2 %>.</p>
+                    </div>
+
+                    <div class="section">
+                        <h2>Common Bathroom:</h2>
+                        <p>The <span class="highlight">Common Bathroom</span> serves all members of the household and measures
+                            <%= summary.commonBathroom %>.</p>
+                    </div>
+
+                    <div class="section">
+                        <h2>Living Room:</h2>
+                        <p>The <span class="highlight">Living Room</span>, measuring
+                            <%= summary.livingRoom %>, serves as the central area for relaxation and entertainment.</p>
+                    </div>
+
+                    <div class="section">
+                        <h2>Kitchen:</h2>
+                        <p>The <span class="highlight">Kitchen</span> is a closed, functional space with dimensions of
+                            <%= summary.kitchen %>, ideal for culinary activities.</p>
+                    </div>
+
+                    <div class="section">
+                        <h2>Dining Space:</h2>
+                        <p>The <span class="highlight">Dining Space</span>, with dimensions of
+                            <%= summary.diningSpace %>, is designed for family meals and gatherings.</p>
+                    </div>
+
+                    <div class="section">
+                        <h2>Utility Area:</h2>
+                        <p>The <span class="highlight">Utility Area</span> measures
+                            <%= summary.utilityArea %> and is dedicated to laundry and other utilities.</p>
+                    </div>
+
+                    <div class="section">
+                        <h2>Porch:</h2>
+                        <p>The <span class="highlight">Porch</span>, measuring
+                            <%= summary.porch %>, offers a welcoming entrance to the house.</p>
+                    </div>
+
+                    <div class="section">
+                        <h2>Sitout:</h2>
+                        <p>The <span class="highlight">Sitout</span> area, measuring
+                            <%= summary.sitout %>, is a cozy spot for enjoying the outdoors.</p>
+                    </div>
+                    <% } else { %>
+                        <p>No summary available.</p>
+                        <% } %>
+                            <button type="button" onclick="openPrintWindow()">Print Summary</button>
+
+            </div>
+
+    </body>
+    <script>
+        function openPrintWindow() {
+            // Create a new window
+            var printWindow = window.open('', '', 'width=800,height=600');
+
+            // Get the summary content (excluding the form and button)
+            var summaryContent = document.querySelector('.container').innerHTML;
+
+            // Remove the input fields and print button from the content
+            summaryContent = summaryContent.replace(/<form[\s\S]*?<\/form>/, ''); // Remove form
+            summaryContent = summaryContent.replace(/<button[\s\S]*?<\/button>/, ''); // Remove print button
+
+            // Write the content into the new window
+
+
+            printWindow.document.write(summaryContent); // Insert the summary HTML content
+            printWindow.document.write('</body></html>');
+
+            // Close the document stream to finish the content
+            printWindow.document.close();
+
+            // Wait for the content to be fully loaded and then trigger the print dialog
+            printWindow.onload = function() {
+                printWindow.print();
+                printWindow.close(); // Close the print window after printing
+            };
+        }
+    </script>
+
+    </html>
+    <%- include("includes/footer") %>

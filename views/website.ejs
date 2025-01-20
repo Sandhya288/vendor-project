@@ -1,0 +1,311 @@
+<%- include("includes/header", { "title": "Profile" }) %>
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Profile</title>
+        <style>
+            /* General Reset */
+            
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            
+            body {
+                font-family: 'Poppins', Arial, sans-serif;
+                background-color: #f8f9fa;
+                color: #212529;
+            }
+            
+            .container {
+                max-width: 1200px;
+                margin: 40px auto;
+                padding: 20px;
+                background-color: #ffffff;
+                border-radius: 8px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            }
+            
+            h1 {
+                text-align: center;
+                font-size: 2rem;
+                margin-bottom: 20px;
+                color: #007bff;
+            }
+            
+            form {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                margin-bottom: 20px;
+            }
+            
+            #form-container {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 20px;
+            }
+            
+            input {
+                font-size: 1rem;
+                padding: 10px;
+                border: 1px solid #ced4da;
+                border-radius: 4px;
+                width: 100%;
+                transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            }
+            
+            input:focus {
+                border-color: #007bff;
+                outline: none;
+                box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            }
+            
+            button {
+                width: 80px;
+                font-size: 0.9rem;
+                padding: 8px 15px;
+                border: none;
+                border-radius: 4px;
+                background-color: #007bff;
+                color: white;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+            
+            button:hover {
+                background-color: #0056b3;
+            }
+            
+            .table-container {
+                margin-top: 20px;
+            }
+            
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10px;
+            }
+            
+            table th,
+            table td {
+                padding: 10px 15px;
+                border: 1px solid #dee2e6;
+            }
+            
+            table th {
+                background-color: #f1f1f1;
+            }
+            
+            .modal {
+                display: none;
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 400px;
+                max-width: 90%;
+                background-color: #ffffff;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+                border-radius: 8px;
+                z-index: 1000;
+                padding: 20px;
+                text-align: center;
+            }
+            
+            .modal-header {
+                font-size: 1.25rem;
+                margin-bottom: 15px;
+                color: #007bff;
+            }
+            
+            .modal-content {
+                font-size: 1rem;
+                margin-bottom: 20px;
+            }
+            
+            .modal-actions {
+                display: flex;
+                justify-content: space-around;
+            }
+            
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+            }
+            
+            .visible {
+                display: block;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>Profile</h1>
+
+            <!-- Vendor Form -->
+            <form method="POST" action="/website">
+                <div id="form-container">
+                    <input type="text" name="name" placeholder="Enter Business Name" required />
+                    <input type="email" name="email" placeholder="Enter Email" required />
+                    <input type="text" name="about" placeholder="Enter About" required />
+                    <input type="text" name="project1" placeholder="Enter project details with name" />
+                    <input type="text" name="project2" placeholder="Enter project details with name" />
+                    <input type="text" name="project3" placeholder="Enter project details with name" />
+                    <input type="link" name="project1Link" placeholder="Enter project Link" />
+                    <input type="link" name="project2Link" placeholder="Enter project Link" />
+                    <input type="link" name="project3Link" placeholder="Enter project Link" />
+                    <input type="link" name="linkedin" placeholder="Enter LinkedIn link" />
+                    <input type="link" name="github" placeholder="Enter Github link" />
+                    <input type="text" name="contactno" placeholder="Enter Your contact Number" />
+                </div>
+                <button type="submit">Submit Vendor</button>
+            </form>
+
+            <!-- Vendor Update Section -->
+            <% if (website && website.length > 0) { %>
+                <% website.forEach(function (entry) { %>
+                    <form method="POST" action="/website/update" class="update-form">
+                        <input type="hidden" name="websiteId" value="<%= entry._id %>" />
+                        <div class="update-fields">
+                            <label>
+                                Name:
+                                <input type="text" name="name" value="<%= entry.name %>" required />
+                            </label>
+                            <label>
+                                Email:
+                                <input type="email" name="email" value="<%= entry.email %>" required />
+                            </label>
+                            <label>
+                                About:
+                                <input type="text" name="about" value="<%= entry.about %>" required />
+                            </label>
+                            <label>
+                                Project 1:
+                                <input type="text" name="project1" value="<%= entry.project1 %>" />
+                            </label>
+                            <label>
+                                Project 2:
+                                <input type="text" name="project2" value="<%= entry.project2 %>" />
+                            </label>
+                            <label>
+                                Project 3:
+                                <input type="text" name="project3" value="<%= entry.project3 %>" />
+                            </label>
+                            <label>
+                                Project 1 Link:
+                                <input type="text" name="project1Link" value="<%= entry.project1Link %>" />
+                            </label>
+                            <label>
+                                Project 2 Link:
+                                <input type="text" name="project2Link" value="<%= entry.project2Link %>" />
+                            </label>
+                            <label>
+                                Project 3 Link:
+                                <input type="text" name="project3Link" value="<%= entry.project3Link %>" />
+                            </label>
+                            <label>
+                                LinkedIn:
+                                <input type="link" name="linkedin" value="<%= entry.linkedin %>" />
+                            </label>
+                            <label>
+                                GitHub:
+                                <input type="link" name="github" value="<%= entry.github %>" />
+                            </label>
+                            <label>
+                                Contact Number:
+                                <input type="text" name="contactno" value="<%= entry.contactno %>" />
+                            </label>
+                        </div>
+                        <button type="submit" class="save">Save</button>
+                    </form>
+                    <form action="/website/delete" method="POST" class="delete-form">
+                        <input type="hidden" name="websiteId" value="<%= entry._id %>" />
+                        <button type="submit" onclick="return confirm('Are you sure you want to delete this entry?');">Delete</button>
+                    </form>
+
+                    <button type="button" onclick="createWebsite('<%= entry._id %>')">View Website</button>
+
+                    <% }) %>
+                        <% } else { %>
+                            <p>No vendors found.</p>
+                            <% } %>
+        </div>
+
+
+        <!-- Modal Window -->
+        <div class="overlay" id="overlay"></div>
+        <div class="modal" id="modal">
+            <div class="modal-header">My Profile</div>
+            <div class="modal-content" id="modal-content"></div>
+            <div class="modal-actions">
+                <button id="shareButton">Share</button>
+                <button onclick="closeModal()">Close</button>
+            </div>
+        </div>
+
+        <script>
+            function openModal(name, email, about, id, project1, project2, project3, linkedin, github, contactno) {
+                const publicLink = `${window.location.origin}/website/view/${id}`;
+                const modalContent = `
+                    <p><strong>Name:</strong> ${name}</p>
+                    <p><strong>Email:</strong> ${email}</p>
+                    <p><strong>About:</strong> ${about}</p>
+                    <p><strong>Project1:</strong> ${project1}</p>
+                    <p><strong>Project2:</strong> ${project2}</p>
+                    <p><strong>Project3:</strong> ${project3}</p>
+                     <p><strong>Project1 Link:</strong> ${project1Link}</p>
+                    <p><strong>Project2 Link:</strong> ${project2Link}</p>
+                    <p><strong>Project3 Link:</strong> ${project3Link}</p>
+                    <p><strong>LinkedIn:</strong> ${linkedin}</p>
+                    <p><strong>Github:</strong> ${github}</p>
+                    <p><strong>Contact Number:</strong> ${contactno}</p>
+
+                    <p><strong>Public Link:</strong> <input type="text" id="publicLink" value="${publicLink}" readonly style="width: 100%; padding: 5px;" /></p>
+                `;
+                document.getElementById("modal-content").innerHTML = modalContent;
+                document.getElementById("modal").classList.add("visible");
+                document.getElementById("overlay").classList.add("visible");
+            }
+
+            shareButton.onclick = function() {
+                const publicLink = document.getElementById("publicLink");
+                publicLink.select();
+                publicLink.setSelectionRange(0, 99999); // For mobile devices
+                document.execCommand("copy");
+
+                alert('Public link copied to clipboard!');
+            };
+
+
+
+            function closeModal() {
+                document.getElementById("modal").classList.remove("visible");
+                document.getElementById("overlay").classList.remove("visible");
+            }
+
+            function createWebsite(id) {
+                const url = `/website/view/${id}`;
+                const width = 800;
+                const height = 600;
+                const left = (screen.width - width) / 2;
+                const top = (screen.height - height) / 2;
+
+                window.open(url, '_blank', `width=${width},height=${height},top=${top},resizable,scrollbars`);
+            }
+        </script>
+    </body>
+
+    </html>
+    <%- include("includes/footer") %>

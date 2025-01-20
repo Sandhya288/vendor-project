@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Edit</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th,
+        td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        
+        .edit-btn,
+        .save-btn {
+            padding: 5px 10px;
+            margin: 5px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .edit-btn {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .save-btn {
+            background-color: #28a745;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Vendor Details</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Location</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Offer</th>
+                <th>Contact</th>
+                <th>Coupon</th>
+                <th>Store Link</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr data-id="6774f5b3f4310b7f4873edca">
+                <td><span class="view">New York</span><input type="text" class="edit" value="New York" style="display: none;"></td>
+                <td><span class="view">John's Store</span><input type="text" class="edit" value="John's Store" style="display: none;"></td>
+                <td><span class="view">john@example.com</span><input type="text" class="edit" value="john@example.com" style="display: none;"></td>
+                <td><span class="view">20% Off</span><input type="text" class="edit" value="20% Off" style="display: none;"></td>
+                <td><span class="view">1234567890</span><input type="text" class="edit" value="1234567890" style="display: none;"></td>
+                <td><span class="view">SAVE20</span><input type="text" class="edit" value="SAVE20" style="display: none;"></td>
+                <td><span class="view"><a href="http://example.com">Visit Store</a></span><input type="text" class="edit" value="http://example.com" style="display: none;"></td>
+                <td>
+                    <button class="edit-btn">Edit</button>
+                    <button class="save-btn" style="display: none;">Save</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        document.querySelectorAll('.edit-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const row = button.closest('tr');
+                row.querySelectorAll('.view').forEach(el => el.style.display = 'none');
+                row.querySelectorAll('.edit').forEach(el => el.style.display = 'inline-block');
+                row.querySelector('.edit-btn').style.display = 'none';
+                row.querySelector('.save-btn').style.display = 'inline-block';
+            });
+        });
+
+        document.querySelectorAll('.save-btn').forEach(button => {
+            button.addEventListener('click', async() => {
+                const row = button.closest('tr');
+                const id = row.dataset.id;
+
+                const updatedData = {
+                    location: row.querySelector('td:nth-child(1) .edit').value,
+                    name: row.querySelector('td:nth-child(2) .edit').value,
+                    email: row.querySelector('td:nth-child(3) .edit').value,
+                    offer: row.querySelector('td:nth-child(4) .edit').value,
+                    contact: row.querySelector('td:nth-child(5) .edit').value,
+                    coupon: row.querySelector('td:nth-child(6) .edit').value,
+                    storelink: row.querySelector('td:nth-child(7) .edit').value,
+                };
+
+                try {
+                    const response = await fetch(`/profile/${id}/edit`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(updatedData),
+                    });
+
+                    const result = await response.json();
+                    if (result.success) {
+                        row.querySelectorAll('.view').forEach((el, index) => {
+                            el.textContent = Object.values(updatedData)[index];
+                            el.style.display = 'inline-block';
+                        });
+                        row.querySelectorAll('.edit').forEach(el => el.style.display = 'none');
+                        row.querySelector('.edit-btn').style.display = 'inline-block';
+                        row.querySelector('.save-btn').style.display = 'none';
+                    } else {
+                        alert('Failed to update vendor');
+                    }
+                } catch (error) {
+                    console.error(error);
+                    alert('Error updating vendor');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

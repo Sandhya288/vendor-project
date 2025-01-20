@@ -1,0 +1,115 @@
+<%- include("includes/header", {
+    "title": "Register"
+}) %>
+
+    <div class="container mt-5 mb-5">
+        <%- include("includes/ResponseAlert", {
+        "request": request
+    }) %>
+
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card shadow-lg border-0">
+                        <div class="card-header bg-primary text-white text-center">
+                            <h2>Create an Account</h2>
+                            <p class="mb-0">Join us today to get started!</p>
+                        </div>
+                        <div class="card-body p-4">
+                            <form action="<%= request.mainURL %>/Register" method="POST">
+                                <!-- Name -->
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Name</label>
+                                    <input type="text" id="name" placeholder="Enter your name" name="name" class="form-control rounded-pill px-3" required />
+                                </div>
+
+                                <!-- Email -->
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" id="email" placeholder="Enter your email" name="email" class="form-control rounded-pill px-3" required />
+                                </div>
+
+                                <!-- Password -->
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Password</label>
+                                    <input type="password" id="password" placeholder="Enter a secure password" name="password" class="form-control rounded-pill px-3" required />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="role" class="form-label">Role</label>
+                                    <select id="role" name="role" class="form-control rounded-pill px-3" required>
+                                        <option value="" disabled selected>Select a Role</option>
+                                        <option value="Vendor">Vendor</option>
+                                        <option value="Consultant">Consultant</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label">Phone Number</label>
+                                    <input type="phone" id="phone" placeholder="Enter phone Number" name="phone" class="form-control rounded-pill px-3" required />
+                                </div>
+
+                                <div class="text-center">
+                                    <input type="submit" value="Register" class="btn btn-primary w-100 rounded-pill py-2 shadow-sm" />
+                                </div>
+                            </form>
+                        </div>
+                        <div class="card-footer text-center bg-light">
+                            <p class="mb-0">Already have an account? <a href="/login" class="text-primary">Login</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    <%- include("includes/footer") %>
+
+        <style>
+            body {
+                background: linear-gradient(to right, #6a11cb, #2575fc);
+                font-family: 'Roboto', sans-serif;
+                color: #333;
+                margin: 0;
+                padding: 0;
+            }
+            
+            .container {
+                max-width: 800px;
+            }
+            
+            .card {
+                border-radius: 20px;
+                overflow: hidden;
+            }
+            
+            .form-control {
+                height: 50px;
+                font-size: 16px;
+            }
+            
+            .btn-primary {
+                background-color: #2575fc;
+                border: none;
+                transition: background-color 0.3s ease;
+            }
+            
+            .btn-primary:hover {
+                background-color: #6a11cb;
+            }
+            
+            label {
+                font-weight: bold;
+            }
+            /* Add spacing at the bottom to ensure visibility */
+            
+            .container {
+                padding-bottom: 60px;
+            }
+            
+            footer {
+                position: relative;
+                bottom: 0;
+                width: 100%;
+                background-color: #f8f9fa;
+                text-align: center;
+                padding: 10px 0;
+            }
+        </style>

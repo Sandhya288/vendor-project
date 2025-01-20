@@ -1,0 +1,132 @@
+<%- include("includes/header") %>
+
+    <div id="homeApp" style="margin-bottom: 80px;">
+
+        <div class="container" id="features">
+            <div class="row justify-content-center text-center">
+                <div class="col-md-8 col-lg-6">
+                    <!-- App Title and Description -->
+                    <h1 class="display-4 font-weight-bold text-primary mb-3">File Transfer Web App</h1>
+                    <p class="lead text-muted mb-4">Effortlessly send, receive, and manage your files with the most secure and intuitive platform. Share your files in just a few clicks!</p>
+
+                    <!-- Get Started Button -->
+                    <a v-bind:href="mainURL + '/MyUploads'" class="btn btn-lg btn-primary px-4 py-2 rounded-pill shadow-sm">
+                    Get Started
+                </a>
+                </div>
+            </div>
+
+            <!-- Optional Additional Section with Features -->
+            <div class="row mt-5">
+                <div class="col-md-4">
+                    <div class="card border-light shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
+                            <h5 class="card-title">Easy Upload</h5>
+                            <p class="card-text">Easily upload files to share with others. Fast and secure.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-light shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-download fa-3x text-primary mb-3"></i>
+                            <h5 class="card-title">Fast Downloads</h5>
+                            <p class="card-text">Download files with just one click, no hassle.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-light shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-lock fa-3x text-primary mb-3"></i>
+                            <h5 class="card-title">Secure</h5>
+                            <p class="card-text">Your files are protected with advanced security features.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const homeApp = Vue.createApp({
+            data() {
+                return {
+                    mainURL: baseUrl,
+                }
+            }
+        });
+        homeApp.mount("#homeApp");
+    </script>
+
+    <!-- Include FontAwesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Custom Styles */
+        
+        #whatsappChat {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        body {
+            background: #f7f7f7;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        #features {
+            padding-top: 50px;
+        }
+        
+        #homeApp h1 {
+            font-family: 'Helvetica', sans-serif;
+            font-weight: 700;
+        }
+        
+        .btn-primary {
+            background-color: #0069d9;
+            border-color: #0062cc;
+            transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+        
+        .card {
+            border-radius: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-title {
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+        
+        .lead {
+            font-size: 1.5rem;
+        }
+        /* Responsive adjustments */
+        
+        @media (max-width: 767px) {
+            #homeApp {
+                padding-top: 20px;
+            }
+            .row.justify-content-center {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+            .col-md-8 {
+                margin-top: 30px;
+            }
+        }
+    </style>

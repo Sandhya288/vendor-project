@@ -1,0 +1,27 @@
+<%- include("includes/header") %>
+
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+        <% collections.forEach(collection => { %>
+            <div class="collection">
+                <h2>
+                    <%= collection.collection %>
+                </h2>
+                <% if (collection.status === "success") { %>
+                    <ul>
+                        <% collection.data.forEach(doc => { %>
+                            <li>
+                                <%= JSON.stringify(doc) %>
+                            </li>
+                            <% }) %>
+                    </ul>
+                    <% } else { %>
+                        <p>Error:
+                            <%= collection.message %>
+                        </p>
+                        <% } %>
+            </div>
+            <% }) %>
+    </div>
+
+    <%- include("includes/footer") %>

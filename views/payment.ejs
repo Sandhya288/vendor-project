@@ -1,0 +1,261 @@
+<%- include("includes/header", {
+    "title": "Payment"
+}) %>
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Payment</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f4;
+            }
+            
+            .container {
+                width: 100%;
+                max-width: 800px;
+                margin: 50px auto;
+                padding: 20px;
+                background: #fff;
+                border-radius: 8px;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            }
+            
+            h1 {
+                text-align: center;
+                margin-bottom: 20px;
+                color: #333;
+            }
+            
+            form {
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 30px;
+            }
+            
+            input,
+            select,
+            button {
+                margin-bottom: 15px;
+                padding: 10px;
+                font-size: 16px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+            
+            button {
+                background-color: #007bff;
+                color: #fff;
+                border: none;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+            
+            button:hover {
+                background-color: #0056b3;
+            }
+            
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+            
+            table th,
+            table td {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: left;
+            }
+            
+            table th {
+                background-color: #f2f2f2;
+                text-transform: uppercase;
+            }
+            
+            .action-button {
+                padding: 5px 10px;
+                background-color: #28a745;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                text-decoration: none;
+            }
+            
+            .action-button:hover {
+                background-color: #218838;
+            }
+            
+            .modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                justify-content: center;
+                align-items: center;
+            }
+            
+            .modal-content {
+                background: #fff;
+                padding: 20px;
+                border-radius: 8px;
+                width: 400px;
+                text-align: center;
+            }
+            
+            .modal-content input {
+                width: 80%;
+                margin-bottom: 15px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>Payment Form</h1>
+
+            <!-- Display success or error messages -->
+            <% if (request.status === "success") { %>
+                <div class="success-message">
+                    <%= request.message %>
+                </div>
+                <% } else if (request.status === "error") { %>
+                    <div class="error-message">
+                        <%= request.message %>
+                    </div>
+                    <% } %>
+
+                        <!-- Payment Form -->
+                        <form method="POST" action="/payment">
+                            <input type="text" name="constructorName" placeholder="Constructor Name" required />
+                            <input type="text" name="location" placeholder="Location" required />
+                            <input type="text" name="projectSiteName" placeholder="Project Site Name" required />
+                            <select name="modeOfPayment" required>
+                <option value="" disabled>Select Mode of Payment</option>
+                <option value="Credit Card">Credit Card</option>
+                <option value="Debit Card">Debit Card</option>
+                <option value="Net Banking">Net Banking</option>
+                <option value="Cash">Cash</option>
+            </select>
+                            <input type="date" name="date" required />
+                            <input type="number" name="amount" placeholder="Amount" required />
+                            <button type="submit">Submit Payment</button>
+                        </form>
+
+                        <!-- Payment List -->
+                        <h2>Your Payments</h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Constructor Name</th>
+                                    <th>Location</th>
+                                    <th>Project Site</th>
+                                    <th>Mode of Payment</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (payments && payments.length > 0) { %>
+                                    <% payments.forEach(function(payment) { %>
+                                        <tr>
+                                            <td>
+                                                <%= payment.constructorName %>
+                                            </td>
+                                            <td>
+                                                <%= payment.location %>
+                                            </td>
+                                            <td>
+                                                <%= payment.projectSiteName %>
+                                            </td>
+                                            <td>
+                                                <%= payment.modeOfPayment %>
+                                            </td>
+                                            <td>
+                                                <%= new Date(payment.date).toLocaleDateString() %>
+                                            </td>
+                                            <td>₹
+                                                <%= payment.amount.toFixed(2) %>
+                                            </td>
+                                            <td>
+                                                <button class="action-button" onclick="openModal('<%= payment._id %>')">Share</button>
+                                            </td>
+                                        </tr>
+                                        <% }) %>
+                                            <% } else { %>
+                                                <tr>
+                                                    <td colspan="7" style="text-align: center;">No payments found.</td>
+                                                </tr>
+                                                <% } %>
+                            </tbody>
+                        </table>
+        </div>
+
+        <!-- Share Modal -->
+        <div id="shareModal" class="modal">
+            <div class="modal-content">
+                <h3>Share Payment</h3>
+                <input type="email" id="shareEmail" placeholder="Enter email address" required />
+                <button onclick="submitShare()">Share</button>
+                <button onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+
+        <script>
+            let currentPaymentId = null;
+
+            function openModal(paymentId) {
+                currentPaymentId = paymentId;
+                document.getElementById("shareModal").style.display = "flex";
+            }
+
+            function closeModal() {
+                document.getElementById("shareModal").style.display = "none";
+                currentPaymentId = null;
+            }
+
+            async function submitShare() {
+                const email = document.getElementById("shareEmail").value;
+
+                if (!email) {
+                    alert("Please enter an email address.");
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append("paymentId", currentPaymentId);
+                formData.append("email", email);
+
+                try {
+                    const response = await fetch(`/payment/share/`, {
+                        method: "POST",
+                        body: formData, // Send as FormData
+                    });
+
+                    const data = await response.json();
+                    if (response.ok) {
+                        alert("Payment shared successfully!");
+                        closeModal();
+                    } else {
+                        alert(data.message || "An error occurred while sharing the payment.");
+                    }
+                } catch (error) {
+                    console.error("Error sharing payment:", error);
+                    alert("An unexpected error occurred.");
+                }
+            }
+        </script>
+    </body>
+
+    </html>
+    <%- include("includes/footer") %>
