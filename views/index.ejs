@@ -21,7 +21,9 @@
                 <div class="col-md-4">
                     <div class="card border-light shadow-sm">
                         <div class="card-body text-center">
-                            <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
+                            <a href="<%= request.mainURL %>/MyUploads">
+                                <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
+                            </a>
                             <h5 class="card-title">Easy Upload</h5>
                             <p class="card-text">Easily upload files to share with others. Fast and secure.</p>
                         </div>
@@ -30,22 +32,64 @@
                 <div class="col-md-4">
                     <div class="card border-light shadow-sm">
                         <div class="card-body text-center">
-                            <i class="fas fa-download fa-3x text-primary mb-3"></i>
-                            <h5 class="card-title">Fast Downloads</h5>
-                            <p class="card-text">Download files with just one click, no hassle.</p>
+                            <a href="<%= request.mainURL %>/website">
+                                <i class="fas fa-globe fa-3x text-primary mb-3"></i>
+                            </a>
+                            <h5 class="card-title">Make Website</h5>
+                            <p class="card-text">You can create a website quickly set up and manage your own online platform.</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="card border-light shadow-sm">
                         <div class="card-body text-center">
-                            <i class="fas fa-lock fa-3x text-primary mb-3"></i>
-                            <h5 class="card-title">Secure</h5>
-                            <p class="card-text">Your files are protected with advanced security features.</p>
+                            <a href="<%= request.mainURL %>/profile">
+                                <i class="fas fa-store fa-3x text-primary mb-3"></i>
+                            </a>
+                            <h5 class="card-title">Vendor</h5>
+                            <p class="card-text">You can add your business as a vendor and connect with clients easily.</p>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <div class="row mt-5">
+                <div class="col-md-4">
+                    <div class="card border-light shadow-sm">
+                        <div class="card-body text-center">
+                            <a href="<%= request.mainURL %>/store">
+                                <i class="fas fa-store fa-3x text-primary mb-3"></i>
+                            </a>
+                            <h5 class="card-title">Store</h5>
+                            <p class="card-text">Manage your inventory efficiently. Add, track, and organize stock items with ease.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-light shadow-sm">
+                        <div class="card-body text-center">
+                            <a href="<%= request.mainURL %>/summary">
+                                <i class="fas fa-file-alt fa-3x text-primary mb-3"></i>
+                            </a>
+                            <h5 class="card-title">Build Construction Summary</h5>
+                            <p class="card-text">Generate comprehensive summaries for construction projects quickly and easily.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-light shadow-sm">
+                        <div class="card-body text-center">
+                            <a href="<%= request.mainURL %>/estimation">
+                                <i class="fas fa-calculator fa-3x text-primary mb-3"></i>
+                            </a>
+                            <h5 class="card-title">Estimation</h5>
+                            <p class="card-text">Calculate project costs and estimates efficiently with our estimation tools.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
         </div>
     </div>
 
@@ -63,70 +107,135 @@
     <!-- Include FontAwesome for icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
-        /* Custom Styles */
-        
-        #whatsappChat {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
+        /* Body Styling */
         
         body {
-            background: #f7f7f7;
-            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f7f7f7, #e0e0e0);
+            font-family: 'Poppins', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
         }
+        /* Header Styling */
         
-        #features {
-            padding-top: 50px;
-        }
-        
-        #homeApp h1 {
+        h1,
+        h5 {
             font-family: 'Helvetica', sans-serif;
             font-weight: 700;
         }
         
+        h1 {
+            color: #004085;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        p.lead {
+            font-size: 1.3rem;
+            color: #555;
+            margin-bottom: 1.5rem;
+        }
+        /* Button Styling */
+        
         .btn-primary {
-            background-color: #0069d9;
-            border-color: #0062cc;
-            transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+            background-color: #007bff;
+            border-color: #0056b3;
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: all 0.3s ease-in-out;
         }
         
         .btn-primary:hover {
             background-color: #0056b3;
-            border-color: #004085;
+            border-color: #003f7f;
+            box-shadow: 0px 4px 12px rgba(0, 91, 187, 0.3);
+        }
+        
+        .btn-primary:focus {
+            outline: none;
+            box-shadow: 0px 0px 8px 3px rgba(0, 123, 255, 0.5);
+        }
+        /* Features Section */
+        
+        #features {
+            padding: 3rem 1rem;
         }
         
         .card {
-            border-radius: 10px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 15px;
+            background: #fff;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
         }
         
         .card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-body {
+            padding: 1rem;
         }
         
         .card-title {
-            font-weight: 600;
-            font-size: 1.25rem;
+            font-size: 1.5rem;
+            color: #004085;
         }
         
-        .lead {
-            font-size: 1.5rem;
+        .card-text {
+            color: #666;
+            font-size: 1rem;
+            margin-top: 0.5rem;
         }
-        /* Responsive adjustments */
+        /* Icon Styling */
+        
+        .fa-cloud-upload-alt,
+        .fa-download,
+        .fa-lock {
+            color: #007bff;
+        }
+        /* Responsive Adjustments */
         
         @media (max-width: 767px) {
-            #homeApp {
-                padding-top: 20px;
+            h1.display-4 {
+                font-size: 2rem;
             }
-            .row.justify-content-center {
-                padding-left: 15px;
-                padding-right: 15px;
+            .lead {
+                font-size: 1.1rem;
             }
-            .col-md-8 {
-                margin-top: 30px;
+            .card {
+                margin-bottom: 1.5rem;
             }
+        }
+        /* WhatsApp Chat Icon */
+        
+        #whatsappChat {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        #whatsappChat a {
+            background: #25d366;
+            color: #fff;
+            padding: 12px 15px;
+            border-radius: 50%;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease-in-out;
+        }
+        
+        #whatsappChat a:hover {
+            transform: scale(1.1);
+            box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.3);
+        }
+        /* Footer */
+        
+        footer {
+            background: #004085;
+            color: #fff;
+            text-align: center;
+            padding: 1rem 0;
+            font-size: 0.9rem;
         }
     </style>

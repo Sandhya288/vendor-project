@@ -10,42 +10,55 @@
         <title>Payment</title>
         <style>
             body {
-                font-family: Arial, sans-serif;
+                font-family: 'Poppins', Arial, sans-serif;
                 margin: 0;
                 padding: 0;
-                background-color: #f4f4f4;
+                background-color: #f4f7fc;
             }
             
             .container {
                 width: 100%;
-                max-width: 800px;
+                max-width: 900px;
                 margin: 50px auto;
-                padding: 20px;
+                padding: 30px;
                 background: #fff;
-                border-radius: 8px;
-                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+                border-radius: 12px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+                transition: box-shadow 0.3s ease;
+            }
+            
+            .container:hover {
+                box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
             }
             
             h1 {
                 text-align: center;
-                margin-bottom: 20px;
-                color: #333;
+                margin-bottom: 30px;
+                font-size: 28px;
+                color: #2c3e50;
+                font-weight: bold;
             }
             
             form {
                 display: flex;
                 flex-direction: column;
-                margin-bottom: 30px;
             }
             
             input,
             select,
             button {
-                margin-bottom: 15px;
-                padding: 10px;
+                margin-bottom: 20px;
+                padding: 12px;
                 font-size: 16px;
-                border: 1px solid #ccc;
-                border-radius: 4px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                transition: border-color 0.3s;
+            }
+            
+            input:focus,
+            select:focus {
+                border-color: #007bff;
+                outline: none;
             }
             
             button {
@@ -53,39 +66,76 @@
                 color: #fff;
                 border: none;
                 cursor: pointer;
-                transition: background-color 0.3s;
+                transition: background-color 0.3s, transform 0.2s;
+                padding: 15px;
+                font-size: 18px;
+                border-radius: 8px;
             }
             
             button:hover {
                 background-color: #0056b3;
+                transform: translateY(-2px);
+            }
+            
+            button:active {
+                background-color: #004085;
+                transform: translateY(0);
             }
             
             table {
                 width: 100%;
-                border-collapse: collapse;
-                margin-top: 20px;
+                border-collapse: separate;
+                /* Add spacing between cells */
+                border-spacing: 0 8px;
+                /* Adds vertical spacing between rows */
+                margin-top: 15px;
             }
             
             table th,
             table td {
-                border: 1px solid #ddd;
-                padding: 10px;
+                padding: 15px;
+                /* Increase padding for better spacing */
                 text-align: left;
+                font-size: 16px;
+                border: none;
+                /* Remove inner borders */
+                background-color: #fff;
+                /* Ensure consistency in cell background */
+                border-radius: 8px;
+                /* Rounded corners for table cells */
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                /* Add shadow for floating effect */
             }
             
             table th {
-                background-color: #f2f2f2;
-                text-transform: uppercase;
+                background-color: #e9f5ff;
+                /* Light blue for table header */
+                color: #007bff;
+                /* Match button color */
+                font-weight: bold;
+            }
+            
+            table td {
+                background-color: #f9f9f9;
+                color: #333;
+            }
+            
+            table tr:hover td {
+                background-color: #f4f7fc;
+                /* Highlight row on hover */
+                transition: background-color 0.3s;
             }
             
             .action-button {
-                padding: 5px 10px;
+                padding: 10px 20px;
+                /* Adjust padding */
                 background-color: #28a745;
                 color: white;
                 border: none;
-                border-radius: 4px;
+                border-radius: 8px;
                 cursor: pointer;
                 text-decoration: none;
+                transition: background-color 0.3s;
             }
             
             .action-button:hover {
@@ -106,15 +156,71 @@
             
             .modal-content {
                 background: #fff;
-                padding: 20px;
-                border-radius: 8px;
+                padding: 30px;
+                border-radius: 10px;
                 width: 400px;
                 text-align: center;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             }
             
             .modal-content input {
-                width: 80%;
-                margin-bottom: 15px;
+                width: 100%;
+                padding: 12px;
+                margin-bottom: 20px;
+                border-radius: 8px;
+                border: 1px solid #ccc;
+            }
+            
+            .submit {
+                width: 110px;
+            }
+            
+            .success-message,
+            .error-message {
+                padding: 10px 15px;
+                margin-bottom: 20px;
+                border-radius: 8px;
+                font-size: 16px;
+                text-align: center;
+            }
+            
+            .success-message {
+                background-color: #28a745;
+                color: #fff;
+            }
+            
+            .error-message {
+                background-color: #e74c3c;
+                color: #fff;
+            }
+            /* Responsive Design for Mobile Devices */
+            
+            @media (max-width: 768px) {
+                .container {
+                    padding: 20px;
+                    margin: 20px;
+                }
+                h1 {
+                    font-size: 24px;
+                }
+                form input,
+                form select,
+                form button {
+                    font-size: 14px;
+                    padding: 10px;
+                }
+                table th,
+                table td {
+                    font-size: 14px;
+                    padding: 10px;
+                }
+                .action-button {
+                    padding: 6px 12px;
+                }
+            }
+            
+            h3 {
+                margin-top: 30px;
             }
         </style>
     </head>
@@ -148,57 +254,71 @@
             </select>
                             <input type="date" name="date" required />
                             <input type="number" name="amount" placeholder="Amount" required />
-                            <button type="submit">Submit Payment</button>
+                            <button class="submit" type="submit">Submit Payment</button>
                         </form>
 
                         <!-- Payment List -->
                         <h2>Your Payments</h2>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Constructor Name</th>
-                                    <th>Location</th>
-                                    <th>Project Site</th>
-                                    <th>Mode of Payment</th>
-                                    <th>Date</th>
-                                    <th>Amount</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% if (payments && payments.length > 0) { %>
-                                    <% payments.forEach(function(payment) { %>
-                                        <tr>
-                                            <td>
-                                                <%= payment.constructorName %>
-                                            </td>
-                                            <td>
-                                                <%= payment.location %>
-                                            </td>
-                                            <td>
-                                                <%= payment.projectSiteName %>
-                                            </td>
-                                            <td>
-                                                <%= payment.modeOfPayment %>
-                                            </td>
-                                            <td>
-                                                <%= new Date(payment.date).toLocaleDateString() %>
-                                            </td>
-                                            <td>₹
-                                                <%= payment.amount.toFixed(2) %>
-                                            </td>
-                                            <td>
-                                                <button class="action-button" onclick="openModal('<%= payment._id %>')">Share</button>
-                                            </td>
-                                        </tr>
-                                        <% }) %>
-                                            <% } else { %>
+
+                        <% if (payments && payments.length > 0) { %>
+                            <% 
+        // Group payments by projectSiteName
+        const groupedPayments = payments.reduce((acc, payment) => {
+            if (!acc[payment.projectSiteName]) {
+                acc[payment.projectSiteName] = [];
+            }
+            acc[payment.projectSiteName].push(payment);
+            return acc;
+        }, {});
+    %>
+
+                                <% for (const projectSite in groupedPayments) { %>
+                                    <h3>Project Site:
+                                        <%= projectSite %>
+                                    </h3>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Constructor Name</th>
+                                                <th>Location</th>
+                                                <th>Mode of Payment</th>
+                                                <th>Date</th>
+                                                <th>Amount</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% groupedPayments[projectSite].forEach(function(payment) { %>
                                                 <tr>
-                                                    <td colspan="7" style="text-align: center;">No payments found.</td>
+                                                    <td>
+                                                        <%= payment.constructorName %>
+                                                    </td>
+                                                    <td>
+                                                        <%= payment.location %>
+                                                    </td>
+                                                    <td>
+                                                        <%= payment.modeOfPayment %>
+                                                    </td>
+                                                    <td>
+                                                        <%= new Date(payment.date).toLocaleDateString() %>
+                                                    </td>
+                                                    <td>₹
+                                                        <%= payment.amount.toFixed(2) %>
+                                                    </td>
+                                                    <td>
+                                                        <button class="action-button" onclick="openModal('<%= payment._id %>')">Share</button>
+                                                    </td>
                                                 </tr>
-                                                <% } %>
-                            </tbody>
-                        </table>
+                                                <% }) %>
+                                        </tbody>
+                                    </table>
+                                    <% } %>
+                                        <% } else { %>
+                                            <p style="text-align: center;">No payments found.</p>
+                                            <% } %>
+
+                                                </tbody>
+                                                </table>
         </div>
 
         <!-- Share Modal -->

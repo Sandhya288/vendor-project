@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 const path = require("path");
 const fs = require("fs");
 
+
+
 // express formidable is used to parse the form data values
 var formidable = require("express-formidable");
 app.use(formidable());
@@ -44,13 +46,10 @@ app.use("/public/fonts", express.static(__dirname + "/public/fonts"));
 app.use(express.static("public"));
 app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
 app.use("/generated-websites", express.static(path.join(__dirname, "generated-websites")));
-app.use(express.static(path.join(__dirname, 'dist')));
+
 // using EJS as templating engine
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-});
 
 // main URL of website
 var mainURL = "http://localhost:3000";
@@ -648,7 +647,6 @@ http.listen(3000, function() {
                 if (!location ||
                     !name ||
                     !busstype ||
-                    !email ||
                     !offer ||
                     !contact
 
@@ -737,7 +735,7 @@ http.listen(3000, function() {
                 // Ensure the user is logged in (optional, if necessary for your chatbot logic)
                 if (!request.session.user) {
                     request.status = "error";
-                    request.message = "Unauthorized: Please log in.";
+                    request.message = "";
                     return result.json({
                         status: "error",
                         message: "Please log in to continue the conversation.",

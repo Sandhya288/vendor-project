@@ -50,6 +50,12 @@
                 gap: 20px;
             }
             
+            @media (min-width: 600px) {
+                #form-container {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+            
             input {
                 font-size: 1rem;
                 padding: 10px;
@@ -147,6 +153,27 @@
             .visible {
                 display: block;
             }
+            
+            .update-fields {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 20px;
+            }
+            
+            @media (min-width: 600px) {
+                .update-fields {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+            
+            label {
+                display: flex;
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 40px;
+            }
         </style>
     </head>
 
@@ -178,7 +205,9 @@
                 <% website.forEach(function (entry) { %>
                     <form method="POST" action="/website/update" class="update-form">
                         <input type="hidden" name="websiteId" value="<%= entry._id %>" />
+                        <h2 class="mt-5">Your Website:</h2>
                         <div class="update-fields">
+
                             <label>
                                 Name:
                                 <input type="text" name="name" value="<%= entry.name %>" required />

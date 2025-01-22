@@ -23,7 +23,7 @@
         <div class="row">
             <!-- Sidebar -->
             <div class="bg-light sidebar vh-100 position-fixed p-3" id="sidebar">
-                <h3 class="text-primary">File Transfer</h3>
+                <h3 class="text-primary mt-10">File Transfer</h3>
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link active" href="<%= request.mainURL %>">
@@ -88,39 +88,36 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" style="color: rgb(6, 169, 14); font: wieght 50px; " href="<%= request.mainURL %>/chatbot">
-                            <i class="fas fa-box"></i> ChatBot
+                        <a class="nav-link" style="color: rgb(6, 169, 14); font-weight: 500;" href="<%= request.mainURL %>/chatbot">
+                            <i class="fas fa-robot"></i> ChatBot
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="<%= request.mainURL %>/website">
-                            <i class="fas fa-box"></i> Website
+                            <i class="fas fa-globe"></i> Website
                         </a>
                     </li>
-
                     <li class="nav-item">
                         <a class="nav-link" href="<%= request.mainURL %>/summary">
-                            <i class="fas fa-box"></i> Building Summary
+                            <i class="fas fa-building"></i> Building Summary
                         </a>
                     </li>
-
-
                     <li class="nav-item">
                         <a class="nav-link" href="https://chatmouse.in/">
-                            <i class="fas fa-comment"></i> Chat
+                            <i class="fas fa-comments"></i> Chat
                         </a>
-                    </li>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="<%= request.mainURL %>/coupons">
-                            <i class="fas fa-coins" style="color: gold;"></i>Coupons
+                            <i class="fas fa-tags" style="color: gold;"></i> Coupons
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" style="color: rgb(0, 0, 255); font: wieght 50px; " href="<%= request.mainURL %>/subscribe">
-                           Subscribe Now
+                        <a class="nav-link" style="color: rgb(0, 0, 255); font-weight: 500;" href="<%= request.mainURL %>/subscribe">
+                            <i class="fas fa-bell"></i> Subscribe Now
                         </a>
                     </li>
+
 
                     <% if (request.isLogin) { %>
                         <% if (request.session.user.email === 'admin23@gmail.com') { %>
@@ -179,49 +176,66 @@
     </div>
 
     <!-- Custom Styles -->
+
     <style>
+        /* General Body Styling */
+        
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f3f4f7, #e9ecef);
+            color: #333;
+            margin: 0;
+            padding: 0;
         }
+        /* Section Title */
+        
+        .section-title {
+            font-size: 2.8rem;
+            font-weight: bold;
+            color: #4c4c6d;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        /* Sidebar Styling */
         
         .sidebar {
-            width: 250px;
+            width: 260px;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
+            background: #ffffff;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             transform: translateX(-100%);
             z-index: 1000;
-            /* Ensures the sidebar is on top of other content */
             overflow-y: auto;
-            /* Makes the sidebar scrollable */
             position: fixed;
-            /* Keeps the sidebar fixed on the screen */
             top: 0;
             left: 0;
             height: 100vh;
-            /* Ensures the sidebar spans the full height of the viewport */
-            background-color: #f8f9fa;
         }
         
         .sidebar.visible {
             transform: translateX(0);
+            box-shadow: 4px 0 8px rgba(0, 0, 0, 0.2);
         }
         
         .sidebar h3 {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             font-weight: bold;
-            margin-left: 40px;
+            margin-left: 48px;
+            color: #007bff;
+            padding: 10px 0;
+            border-bottom: 2px solid #f3f4f7;
         }
+        /* Toggle Button */
         
         .toggle-btn {
             position: fixed;
-            top: 10px;
-            left: 10px;
-            z-index: 5000;
-            /* Keeps the toggle button above the sidebar */
+            top: 15px;
+            left: 15px;
+            z-index: 1100;
             border: none;
-            width: 40px;
-            height: 40px;
-            background-color: #007bff;
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #6c63ff, #4e4cc7);
             color: white;
             border-radius: 50%;
             cursor: pointer;
@@ -229,39 +243,47 @@
             align-items: center;
             justify-content: center;
         }
+        /* Sidebar Navigation */
         
         .nav-link {
             color: #333;
-            padding: 10px 15px;
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            font-weight: 500;
             display: flex;
             align-items: center;
-            transition: background 0.3s ease;
+            text-decoration: none;
+            transition: background 0.3s ease, color 0.3s ease;
         }
         
         .nav-link i {
-            margin-right: 10px;
-            font-size: 1.2rem;
+            margin-right: 15px;
+            font-size: 1.4rem;
         }
         
         .nav-link:hover {
             background: #f1f1f1;
-            color: #007bff;
+            color: #4e4cc7;
         }
         
         .nav-link.active {
-            background: #007bff;
+            background: #4e4cc7;
             color: white;
+            font-weight: bold;
         }
+        /* Main Content Area */
         
         #main-content {
             margin-left: 0;
             transition: margin-left 0.3s ease;
+            padding: 20px;
         }
         
         #main-content.expanded {
-            margin-left: 250px;
+            margin-left: 260px;
         }
     </style>
+
 
     <!-- JavaScript for Toggle -->
     <script>

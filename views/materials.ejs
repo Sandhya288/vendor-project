@@ -7,7 +7,7 @@
     <title>Materials Form</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f4f4f9;
@@ -110,6 +110,19 @@
         
         #squareFootage {
             width: 250px;
+        }
+        
+        @media (max-width: 600px) {
+            .item-row {
+                flex-direction: column;
+            }
+            .total-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            button {
+                width: 100%;
+            }
         }
     </style>
 </head>

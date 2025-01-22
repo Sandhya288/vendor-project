@@ -9,7 +9,7 @@
         /* Basic styling for a clean, modern look */
         
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f4f4f9;
@@ -103,6 +103,39 @@
         
         .hight {
             height: 150px;
+        }
+        
+        @media screen and (max-width: 768px) {
+            .billing-form-container {
+                width: 90%;
+                /* Adjusts container width for smaller screens */
+                max-width: 90%;
+                /* Ensures it doesn't exceed viewport */
+            }
+            input,
+            textarea {
+                width: 100%;
+                /* Ensure input fields span full width */
+                font-size: 14px;
+                /* Slightly reduce font size */
+            }
+            .item-row {
+                flex-direction: column;
+                /* Stack elements for better visibility */
+                gap: 5px;
+            }
+            .item-row textarea {
+                width: 100%;
+                /* Full width for text areas */
+            }
+            .item-row input {
+                width: 100%;
+                /* Full width for inputs */
+            }
+            .item-row button {
+                width: 100%;
+                /* Full width for buttons */
+            }
         }
     </style>
 </head>

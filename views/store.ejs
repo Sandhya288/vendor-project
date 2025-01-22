@@ -4,7 +4,7 @@
 
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', Arial, sans-serif;
             background-color: #f9f9f9;
             color: #333;
             margin: 0;
@@ -141,8 +141,19 @@
                 flex-direction: column;
             }
         }
+        
+        h1 {
+            margin-left: 50px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
     </style>
-
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="display-5">My Store</h1>
+        </div>
+    </div>
     <form action="/store" method="POST">
         <!-- Fixed fields -->
         <div class="form-row">
