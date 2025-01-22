@@ -379,7 +379,7 @@ http.listen(3000, function() {
                 "sharedWith.email": req.session.user.email,
             }).toArray();
 
-            res.render("sharedWithMe", {
+            res.render("SharedWithMe", {
                 mainURL: app.locals.mainURL, // Pass the main URL
                 sharedLinks: sharedLinks,
                 request: req,
@@ -402,7 +402,7 @@ http.listen(3000, function() {
                 if (!request.session.user) {
                     request.status = "error";
                     request.message = "Unauthorized: Please log in.";
-                    return result.render("Payment", {
+                    return result.render("payment", {
                         request: request,
                         payments: [],
                     });
@@ -424,7 +424,7 @@ http.listen(3000, function() {
                             userId: request.session.user._id,
                         })
                         .toArray(); // Fetch existing payments
-                    return result.render("Payment", {
+                    return result.render("payment", {
                         request: request,
                         payments: payments,
                     });
@@ -454,7 +454,7 @@ http.listen(3000, function() {
                 // Success response
                 request.status = "success";
                 request.message = "Payment submitted successfully.";
-                result.render("Payment", {
+                result.render("payment", {
                     request: request,
                     payments: payments, // Pass the updated payment list
                 });
@@ -468,7 +468,7 @@ http.listen(3000, function() {
                         userId: request.session.user._id,
                     })
                     .toArray(); // Fetch existing payments
-                result.render("Payment", { request: request, payments: payments });
+                result.render("payment", { request: request, payments: payments });
             }
         });
 
@@ -479,7 +479,7 @@ http.listen(3000, function() {
                 if (!request.session.user) {
                     request.status = "error";
                     request.message = "Unauthorized: Please log in.";
-                    return result.render("Payment", {
+                    return result.render("payment", {
                         request: request,
                         payments: [],
                     });
@@ -497,7 +497,7 @@ http.listen(3000, function() {
                 // Render the Payment page with the payment list
                 request.status = "success";
                 request.message = "Payments fetched successfully.";
-                result.render("Payment", {
+                result.render("payment", {
                     request: request,
                     payments: payments, // Ensure `payments` is passed to the EJS template
                 });
@@ -505,7 +505,7 @@ http.listen(3000, function() {
                 console.error("Error fetching payments:", error);
                 request.status = "error";
                 request.message = "An unexpected error occurred.";
-                result.render("Payment", { request: request, payments: [] });
+                result.render("payment", { request: request, payments: [] });
             }
         });
 
@@ -637,7 +637,7 @@ http.listen(3000, function() {
                 if (!request.session.user) {
                     request.status = "error";
                     request.message = "Unauthorized: Please log in.";
-                    return result.render("Profile", {
+                    return result.render("profile", {
                         request: request,
                         profile: [],
                     });
@@ -659,7 +659,7 @@ http.listen(3000, function() {
                             userId: request.session.user._id,
                         })
                         .toArray(); // Fetch existing payments
-                    return result.render("Profile", {
+                    return result.render("profile", {
                         request: request,
                         profile: profile,
                     });
@@ -692,7 +692,7 @@ http.listen(3000, function() {
                 // Success response
                 request.status = "success";
                 request.message = "saved successfully.";
-                result.render("Profile", {
+                result.render("profile", {
                     request: request,
                     profile: profile, // Pass the updated payment list
                 });
@@ -706,7 +706,7 @@ http.listen(3000, function() {
                         userId: request.session.user._id,
                     })
                     .toArray(); // Fetch existing payments
-                result.render("Profile", { request: request, profile: profile });
+                result.render("profile", { request: request, profile: profile });
             }
         });
 
@@ -802,7 +802,7 @@ http.listen(3000, function() {
                 const messages = await database.collection("chat_messages").find().toArray();
 
                 // Render the chatbot page and pass the messages to the template
-                res.render("Chatbot", { messages });
+                res.render("chatbot", { messages });
             } catch (error) {
                 console.error("Error retrieving chat messages:", error);
                 res.render("chatbot", {
@@ -820,7 +820,7 @@ http.listen(3000, function() {
                 if (!request.session.user) {
                     request.status = "error";
                     request.message = "Unauthorized: Please log in.";
-                    return result.render("Profile", {
+                    return result.render("profile", {
                         request: request,
                         profile: [],
                     });
@@ -838,7 +838,7 @@ http.listen(3000, function() {
                 // Render the Payment page with the payment list
                 request.status = "success";
                 request.message = "Saved Successfully.";
-                result.render("Profile", {
+                result.render("profile", {
                     request: request,
                     profile: profile, // Ensure `payments` is passed to the EJS template
                 });
@@ -846,7 +846,7 @@ http.listen(3000, function() {
                 console.error("Error fetching payments:", error);
                 request.status = "error";
                 request.message = "An unexpected error occurred.";
-                result.render("Profile", { request: request, profile: [] });
+                result.render("profile", { request: request, profile: [] });
             }
         });
 
@@ -1219,7 +1219,7 @@ http.listen(3000, function() {
                 if (!request.session.user) {
                     request.status = "error";
                     request.message = "Unauthorized: Please log in.";
-                    return result.render("ProfileAll", {
+                    return result.render("profileall", {
                         request: request,
                         profile: [],
                     });
@@ -1235,7 +1235,7 @@ http.listen(3000, function() {
                 // Render the Profile page with the profile list
                 request.status = "success";
                 request.message = "Fetched all profiles successfully.";
-                result.render("ProfileAll", {
+                result.render("profileall", {
                     request: request,
                     profile: profiles, // Pass all profiles to the template
                 });
@@ -1243,7 +1243,7 @@ http.listen(3000, function() {
                 console.error("Error fetching profiles:", error);
                 request.status = "error";
                 request.message = "An unexpected error occurred.";
-                result.render("ProfileAll", { request: request, profile: [] });
+                result.render("profileall", { request: request, profile: [] });
             }
         });
 
