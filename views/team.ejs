@@ -1,0 +1,243 @@
+<%- include("includes/header", {
+    "title": "Team"
+}) %>
+
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- other head content -->
+    </head>
+
+
+    <style>
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        form {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+            /* Add space between the fields */
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            /* Allow wrapping on smaller screens */
+        }
+        
+        .form-group {
+            flex: 1;
+            /* Make all inputs evenly spaced */
+            min-width: 200px;
+            /* Set a minimum width for each input group */
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: #333;
+        }
+        
+        input[type="text"],
+        input[type="number"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 2px solid #6d6969;
+            border-radius: 4px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            border-color: #007bff;
+        }
+        
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        button[type="submit"] {
+            margin-left: 10px;
+        }
+        
+        #add-entry {
+            margin-bottom: 15px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        #dynamic-fields {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .dynamic-entry .row {
+            display: flex;
+            gap: 15px;
+            /* Space between the columns */
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            /* Allow wrapping for smaller screens */
+        }
+        
+        table thead {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        table th,
+        table td {
+            text-align: left;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        table tbody tr:hover {
+            background-color: #f2f2f2;
+        }
+        
+        form[style="display:inline;"] {
+            display: inline-block;
+        }
+        
+        form input {
+            margin-right: 10px;
+            width: auto;
+        }
+        /* Media query for mobile view */
+        
+        @media (max-width: 768px) {
+            input[type="text"],
+            input[type="number"] {
+                width: 100%;
+            }
+            .form-row {
+                flex-direction: column;
+            }
+        }
+        
+        h1 {
+            margin-left: 50px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+    </style>
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="display-5">Team</h1>
+        </div>
+    </div>
+    <form action="/team" method="POST">
+        <!-- Fixed fields -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="role">Role</label>
+                <input type="text" name="role" value="Team" readonly class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="storeName">Name</label>
+                <input type="text" name="name" placeholder="Enter  Name" required />
+            </div>
+
+            <div class="form-group">
+                <label for="contactDetails">Email</label>
+                <input type="text" name="email" placeholder="Enter Email" required />
+            </div>
+
+
+        </div>
+
+        <!-- Dynamic fields -->
+
+
+
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Role</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Action</th>
+                <th></th>
+
+
+            </tr>
+        </thead>
+        <tbody>
+            <% team.forEach(entry => { %>
+                <tr>
+                    <form action="/team/update" method="POST">
+                        <input type="hidden" name="teamId" value="<%= entry._id %>" />
+                        <td>
+                            <input type="text" name="role" value="<%= entry.role %>" required />
+                        </td>
+                        <td>
+                            <input type="text" name="name" value="<%= entry.name %>" required />
+                        </td>
+                        <td>
+                            <input type="text" name="email" value="<%= entry.email %>" required />
+                        </td>
+
+
+                    </form>
+                    <td>
+                        <form action="/team/delete" method="POST" style="display: inline;">
+                            <input type="hidden" name="teamId" value="<%= entry._id %>" />
+                            <button type="submit" class="delete" onclick="return confirm('Are you sure you want to delete this entry?');" style="font-size: 12px; padding: 2px 6px;">Delete</button>
+                        </form>
+                    </td>
+
+                </tr>
+                <% }); %>
+        </tbody>
+    </table>
+
+    <script>
+        const addEntryButton = document.getElementById("add-entry");
+        const dynamicFields = document.getElementById("dynamic-fields");
+
+        addEntryButton.addEventListener("click", () => {
+            const newEntry = document.querySelector(".dynamic-entry").cloneNode(true);
+            newEntry.querySelectorAll("input").forEach(input => input.value = "");
+            dynamicFields.appendChild(newEntry);
+        });
+    </script>
+
+    <%- include("includes/footer") %>

@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subscription Page</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <style>
         body {
             font-family: 'Poppins', Arial, sans-serif;
@@ -83,74 +82,16 @@
     <div class="subscription-card">
         <h2>Premium Plan</h2>
         <p>Enjoy unlimited access to all features with our Premium Plan.</p>
-        <div class="price">Rs.499/month</div>
+        <div class="price">Rs.4999/month</div>
 
-        <input type="email" id="email" placeholder="Enter your email" required>
-        <input type="tel" id="contact" placeholder="Enter your contact number" required>
+
         <button id="subscribe-btn">Subscribe Now</button>
     </div>
 
     <script>
         document.getElementById('subscribe-btn').addEventListener('click', function() {
-            var email = document.getElementById('email').value;
-            var contact = document.getElementById('contact').value;
-
-            if (!email || !contact) {
-                alert("Please fill in both email and contact number.");
-                return;
-            }
-
-            fetch('/create-order', {
-                    method: 'POST'
-                })
-                .then(response => response.json())
-                .then(data => {
-                    var options = {
-                        "key": "rzp_test_hKRDLdPGnrDgjY", // Correct Razorpay key
-                        "amount": data.amount, // Amount in paise
-                        "currency": "INR",
-                        "name": "Your Company Name",
-                        "description": "Premium Plan Subscription",
-                        "order_id": data.orderId, // Order ID from backend
-                        "handler": function(response) {
-                            fetch("/payments/success", {
-                                    method: "POST",
-                                    headers: {
-                                        "Content-Type": "application/json"
-                                    },
-                                    body: JSON.stringify({
-                                        userId: data.userId, // Fetch dynamically or from session
-                                        payment_id: response.razorpay_payment_id,
-                                        order_id: response.razorpay_order_id,
-                                        razorpay_signature: response.razorpay_signature
-                                    })
-                                })
-                                .then(res => res.json())
-                                .then(data => {
-                                    alert("Payment successful. Subscription extended.");
-                                })
-                                .catch(error => {
-                                    console.error("Error:", error);
-                                    alert("Payment failed. Please try again.");
-                                });
-                        },
-                        "prefill": {
-                            "name": "", // You can add user name here if needed
-                            "email": email,
-                            "contact": contact
-                        },
-                        "theme": {
-                            "color": "#007bff"
-                        }
-                    };
-
-                    var rzp1 = new Razorpay(options);
-                    rzp1.open();
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                    alert("Failed to initiate payment. Please try again.");
-                });
+            // Redirect to the specified link
+            window.location.href = "https://search.app/34rMptZZUiX2DBwBA";
         });
     </script>
 

@@ -102,6 +102,37 @@
         function selectFileForUpload() {
             document.getElementById("input-file-upload").click();
         }
+        // Function to fetch team email suggestions dynamically
+        function fetchTeamEmails() {
+            fetch('/team') // Adjust this endpoint to your actual API
+                .then(response => response.json())
+                .then(data => {
+                    const emailInput = document.getElementById('recipient-email');
+                    const dataList = document.createElement('datalist');
+                    dataList.id = 'team-email-list';
+
+                    // Remove old datalist if exists
+                    const oldDataList = document.getElementById('team-email-list');
+                    if (oldDataList) oldDataList.remove();
+
+                    // Populate datalist with team emails
+                    data.forEach(email => {
+                        const option = document.createElement('option');
+                        option.value = email;
+                        dataList.appendChild(option);
+                    });
+
+                    // Append the new datalist to the email input
+                    emailInput.setAttribute('list', 'team-email-list');
+                    emailInput.parentElement.appendChild(dataList);
+                })
+                .catch(error => {
+                    console.error('Error fetching team emails:', error);
+                });
+        }
+
+        // Fetch team emails when the modal is shown
+        document.getElementById('viewFileModal').addEventListener('show.bs.modal', fetchTeamEmails);
 
         function confirmUpload() {
             swal({

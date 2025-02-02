@@ -4,10 +4,12 @@ var app = express();
 const mongoose = require('mongoose');
 const path = require("path");
 const fs = require("fs");
+const multer = require('multer');
 
 
 
-// express formidable is used to parse the form data values
+
+// Improvedvar formidable = require("express-formidable");
 var formidable = require("express-formidable");
 app.use(formidable());
 
@@ -46,6 +48,8 @@ app.use("/public/fonts", express.static(__dirname + "/public/fonts"));
 app.use(express.static("public"));
 app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
 app.use("/generated-websites", express.static(path.join(__dirname, "generated-websites")));
+app.use("/upload", express.static(path.join(__dirname, "public/upload")));
+
 
 // using EJS as templating engine
 app.set("view engine", "ejs");
@@ -161,6 +165,7 @@ function recursiveSearch(files, query) {
         }
     }
 }
+
 
 // recursive function to search shared files
 function recursiveSearchShared(files, query) {
@@ -313,6 +318,219 @@ http.listen(3000, function() {
             result.render("Admin", {
                 request: request
             });
+        });
+
+
+        const uploadDir = 'public/upload/products';
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+
+        const productStorage = multer.diskStorage({
+            destination: function(req, file, cb) {
+                cb(null, uploadDir); // Save in the `products` subfolder
+            },
+            filename: function(req, file, cb) {
+                cb(null, Date.now() + '-' + file.originalname); // Add timestamp to avoid filename conflicts
+            },
+        });
+
+        const uploadProductImage = multer({
+            storage: productStorage,
+            limits: { fileSize: 5 * 1024 * 1024 }, // Limit file size to 5MB
+            fileFilter: (req, file, cb) => {
+                const fileTypes = /jpeg|jpg|png/;
+                const extname = fileTypes.test(path.extname(file.originalname).toLowerCase());
+                const mimetype = fileTypes.test(file.mimetype);
+
+                if (mimetype && extname) {
+                    cb(null, true);
+                } else {
+                    cb(new Error('Only images (JPEG, JPG, PNG) are allowed!'));
+                }
+            },
+        });
+
+        app.post("/product", async function(request, result) {
+            try {
+                // Retrieve form fields
+                var name = request.fields.name;
+                var description = request.fields.description;
+                var price = request.fields.price;
+
+
+                // Ensure the user is logged in
+                if (!request.session.user) {
+                    request.status = "error";
+                    request.message = "Unauthorized: Please log in.";
+                    return result.render("product", {
+                        request: request,
+                        product: [],
+                    });
+                }
+
+                // Validate required fields
+                if (!name ||
+                    !description ||
+                    !price
+
+                ) {
+                    request.status = "error";
+                    request.message = "All fields are required.";
+                    const product = await database
+                        .collection("product")
+                        .find({
+                            userId: request.session.user._id,
+                        })
+                        .toArray(); // Fetch existing payments
+                    return result.render("product", {
+                        request: request,
+                        product: product,
+                    });
+                }
+
+                // Insert payment data into the database
+                await database.collection("product").insertOne({
+                    userId: request.session.user._id, // Use the logged-in user's ID
+                    name: name,
+                    description: description,
+                    price: price,
+
+                    createdAt: new Date(), // Add a timestamp
+                });
+
+                // Fetch updated payment list in descending order by creation date
+                const product = await database
+                    .collection("product")
+                    .find({
+                        userId: request.session.user._id,
+                    })
+                    .sort({ createdAt: -1 }) // Sort by `createdAt` in descending order
+                    .toArray();
+
+                // Success response
+                request.status = "success";
+                request.message = "Product submitted successfully.";
+                result.render("product", {
+                    request: request,
+                    product: product, // Pass the updated payment list
+                });
+            } catch (error) {
+                console.error("Error processing payment:", error);
+                request.status = "error";
+                request.message = "An unexpected error occurred.";
+                const product = await database
+                    .collection("product")
+                    .find({
+                        userId: request.session.user._id,
+                    })
+                    .toArray(); // Fetch existing payments
+                result.render("product", { request: request, product: product });
+            }
+        });
+
+
+        app.get("/product", async function(request, result) {
+            try {
+                // Ensure the user is logged in
+                if (!request.session.user) {
+                    request.status = "error";
+                    request.message = "Unauthorized: Please log in.";
+                    return result.render("product", {
+                        request: request,
+                        product: [],
+                    });
+                }
+
+                // Retrieve payments for the logged-in user in descending order by creation date
+                const product = await database
+                    .collection("product")
+                    .find({
+                        userId: request.session.user._id, // Use the logged-in user's ID
+                    })
+                    .sort({ createdAt: -1 }) // Sort by `createdAt` in descending order
+                    .toArray();
+
+                // Render the Payment page with the payment list
+                request.status = "success";
+                request.message = "Product fetched successfully.";
+                result.render("product", {
+                    request: request,
+                    product: product, // Ensure `payments` is passed to the EJS template
+                });
+            } catch (error) {
+                console.error("Error fetching product:", error);
+                request.status = "error";
+                request.message = "An unexpected error occurred.";
+                result.render("product", { request: request, product: [] });
+            }
+        });
+
+        app.post("/product/update", async function(request, result) {
+            try {
+                // Retrieve form fields
+                const productId = request.fields.productId; // ID of the profile to update
+                const updatedData = {
+
+                    name: request.fields.name,
+                    description: request.fields.description,
+                    price: request.fields.price
+
+                };
+
+                // Validate required fields
+                if (!productId || !updatedData.name || !updatedData.description || !updatedData.price) {
+                    request.status = "error";
+                    request.message = "All required fields must be filled.";
+                    return result.redirect("/product");
+                }
+
+                // Update the profile in the database
+                await database.collection("product").updateOne({ _id: new ObjectId(productId), userId: request.session.user._id }, { $set: updatedData });
+
+                request.status = "success";
+                request.message = "product updated successfully.";
+                result.redirect("/product"); // Redirect back to the profile page
+            } catch (error) {
+                console.error("Error updating product:", error);
+                request.status = "error";
+                request.message = "An unexpected error occurred.";
+                result.redirect("/product");
+            }
+        });
+        // Delete Vendor Profile
+        app.post("/product/delete", async(req, res) => {
+            try {
+                const productId = req.fields.productId;
+
+                // Ensure profile ID is provided
+                if (!productId) {
+                    req.status = "error";
+                    req.message = "product ID is required for deletion.";
+                    return res.redirect("/product");
+                }
+
+                // Delete the profile from the database
+                const deleteResult = await database.collection("product").deleteOne({
+                    _id: new ObjectId(productId),
+                    userId: req.session.user._id, // Ensure the logged-in user owns the profile
+                });
+
+                if (deleteResult.deletedCount === 0) {
+                    req.status = "error";
+                    req.message = "No matching product found or you do not have permission to delete.";
+                    return res.redirect("/product");
+                }
+
+                req.status = "success";
+                req.message = "product deleted successfully.";
+                res.redirect("/product");
+            } catch (error) {
+                console.error("Error deleting vendor product:", error);
+                req.status = "error";
+                req.message = "An unexpected error occurred.";
+                res.redirect("/product");
+            }
         });
 
 
@@ -812,6 +1030,240 @@ http.listen(3000, function() {
             }
         });
 
+        app.post("/team", async function(request, result) {
+            try {
+                // Retrieve form fields
+                var name = request.fields.name;
+                var email = request.fields.email;
+                var role = request.fields.role;
+
+
+
+
+                // Ensure the user is logged in
+                if (!request.session.user) {
+                    request.status = "error";
+                    request.message = "Unauthorized: Please log in.";
+                    return result.render("team", {
+                        request: request,
+                        team: [],
+                    });
+                }
+
+                // Validate required fields
+                if (!name ||
+                    !email ||
+                    !role
+
+                ) {
+                    request.status = "error";
+                    request.message = "All fields are required.";
+                    const team = await database
+                        .collection("team")
+                        .find({
+                            userId: request.session.user._id,
+                        })
+                        .toArray(); // Fetch existing payments
+                    return result.render("team", {
+                        request: request,
+                        team: team,
+                    });
+                }
+
+                // Insert payment data into the database
+                await database.collection("team").insertOne({
+                    userId: request.session.user._id, // Use the logged-in user's ID
+
+                    name: name,
+                    email: email,
+                    role: role,
+                    createdAt: new Date(), // Convert to Date object
+                    // Add a timestamp
+                });
+
+                // Fetch updated payment list in descending order by creation date
+                const team = await database
+                    .collection("team")
+                    .find({
+                        userId: request.session.user._id,
+                    })
+                    .sort({ createdAt: -1 }) // Sort by `createdAt` in descending order
+                    .toArray();
+
+                // Success response
+                request.status = "success";
+                request.message = "saved successfully.";
+                result.render("team", {
+                    request: request,
+                    team: team, // Pass the updated payment list
+                });
+            } catch (error) {
+                console.error("Error processing payment:", error);
+                request.status = "error";
+                request.message = "An unexpected error occurred.";
+                const team = await database
+                    .collection("team")
+                    .find({
+                        userId: request.session.user._id,
+                    })
+                    .toArray(); // Fetch existing payments
+                result.render("team", { request: request, team: team });
+            }
+        });
+
+        app.get("/team", async function(request, result) {
+            try {
+                // Ensure the user is logged in
+                if (!request.session.user) {
+                    request.status = "error";
+                    request.message = "Unauthorized: Please log in.";
+                    return result.render("team", {
+                        request: request,
+                        team: [],
+                    });
+                }
+
+                // Retrieve payments for the logged-in user in descending order by creation date
+                const team = await database
+                    .collection("team")
+                    .find({
+                        userId: request.session.user._id, // Use the logged-in user's ID
+                    })
+                    .sort({ createdAt: -1 }) // Sort by `createdAt` in descending order
+                    .toArray();
+
+                // Render the Payment page with the payment list
+                request.status = "success";
+                request.message = "Saved Successfully.";
+                result.render("team", {
+                    request: request,
+                    team: team, // Ensure `payments` is passed to the EJS template
+                });
+            } catch (error) {
+                console.error("Error fetching payments:", error);
+                request.status = "error";
+                request.message = "An unexpected error occurred.";
+                result.render("team", { request: request, team: [4] });
+            }
+        });
+
+        app.get("/my-uploads", async function(request, result) {
+            try {
+                // Ensure the user is logged in
+                if (!request.session.user) {
+                    request.status = "error";
+                    request.message = "Unauthorized: Please log in.";
+                    return result.render("MyUploads", {
+                        request: request,
+                        team: [], // Empty team array for unauthorized access
+                    });
+                }
+
+                // Fetch team data for the logged-in user
+                const team = await database
+                    .collection("team")
+                    .find({
+                        userId: request.session.user._id, // Filter by the logged-in user's ID
+                    })
+                    .sort({ createdAt: -1 }) // Sort by creation date (latest first)
+                    .toArray();
+
+                // Pass team data to the My Uploads template
+                request.status = "success";
+                request.message = "Team data fetched successfully.";
+                result.render("MyUploads", {
+                    request: request,
+                    team: team, // Pass the fetched team data to the EJS template
+                });
+            } catch (error) {
+                console.error("Error fetching team data:", error);
+                request.status = "error";
+                request.message = "An unexpected error occurred.";
+                result.render("MyUploads", {
+                    request: request,
+                    team: [], // Empty team array in case of an error
+                });
+            }
+        });
+
+        app.post("/team/update", async(req, res) => {
+            try {
+                // Retrieve form data
+                const teamId = req.fields.teamId;
+                const updatedData = {
+
+                    name: req.fields.name,
+
+                    email: req.fields.email,
+                    role: req.fields.role,
+
+
+                };
+
+                // Validate required fields
+                if (!teamId || !updatedData.name || !updatedData.email || !updatedData.role) {
+                    req.status = "error";
+                    req.message = "All required fields must be filled.";
+                    return res.redirect("/team");
+                }
+
+                // Update the profile in the database
+                const updateResult = await database.collection("team").updateOne({ _id: new ObjectId(teamId), userId: req.session.user._id }, // Match profile and user ownership
+                    { $set: updatedData } // Set updated data
+                );
+
+                if (updateResult.matchedCount === 0) {
+                    req.status = "error";
+                    req.message = "No matching team found or you do not have permission to update.";
+                    return res.redirect("/team");
+                }
+
+                req.status = "success";
+                req.message = "Vendor team updated successfully.";
+                res.redirect("/team");
+            } catch (error) {
+                console.error("Error updating vendor team:", error);
+                req.status = "error";
+                req.message = "An unexpected error occurred.";
+                res.redirect("/team");
+            }
+        });
+
+        // Delete Vendor Profile
+        app.post("/team/delete", async(req, res) => {
+            try {
+                const teamId = req.fields.teamId;
+
+                // Ensure profile ID is provided
+                if (!teamId) {
+                    req.status = "error";
+                    req.message = "team ID is required for deletion.";
+                    return res.redirect("/team");
+                }
+
+                // Delete the profile from the database
+                const deleteResult = await database.collection("team").deleteOne({
+                    _id: new ObjectId(teamId),
+                    userId: req.session.user._id, // Ensure the logged-in user owns the profile
+                });
+
+                if (deleteResult.deletedCount === 0) {
+                    req.status = "error";
+                    req.message = "No matching team found or you do not have permission to delete.";
+                    return res.redirect("/team");
+                }
+
+                req.status = "success";
+                req.message = "Vendor team deleted successfully.";
+                res.redirect("/team");
+            } catch (error) {
+                console.error("Error deleting vendor team:", error);
+                req.status = "error";
+                req.message = "An unexpected error occurred.";
+                res.redirect("/team");
+            }
+        });
+
 
 
         app.get("/profile", async function(request, result) {
@@ -850,69 +1302,86 @@ http.listen(3000, function() {
             }
         });
 
-        app.post("/profile/update", async function(request, result) {
+        // Update Profile
+        app.post("/profile/update", async(req, res) => {
             try {
-                // Retrieve form fields
-                const profileId = request.fields.profileId; // ID of the profile to update
+                // Retrieve form data
+                const profileId = req.fields.profileId;
                 const updatedData = {
-                    location: request.fields.location,
-                    name: request.fields.name,
-                    email: request.fields.email,
-                    offer: request.fields.offer,
-                    contact: request.fields.contact,
-                    coupon: request.fields.coupon || null, // Optional field
-                    storelink: request.fields.storelink || null, // Optional field
+                    location: req.fields.location,
+                    name: req.fields.name,
+                    busstype: req.fields.busstype,
+                    email: req.fields.email,
+                    offer: req.fields.offer,
+                    contact: req.fields.contact,
+                    coupon: req.fields.coupon || null, // Optional
+                    storelink: req.fields.storelink || null, // Optional
                 };
 
                 // Validate required fields
-                if (!profileId || !updatedData.location || !updatedData.name || !updatedData.email || !updatedData.contact) {
-                    request.status = "error";
-                    request.message = "All required fields must be filled.";
-                    return result.redirect("/profile");
+                if (!profileId || !updatedData.location || !updatedData.name || !updatedData.busstype || !updatedData.contact) {
+                    req.status = "error";
+                    req.message = "All required fields must be filled.";
+                    return res.redirect("/profile");
                 }
 
                 // Update the profile in the database
-                await database.collection("profile").updateOne({ _id: new ObjectId(profileId), userId: request.session.user._id }, { $set: updatedData });
+                const updateResult = await database.collection("profile").updateOne({ _id: new ObjectId(profileId), userId: req.session.user._id }, // Match profile and user ownership
+                    { $set: updatedData } // Set updated data
+                );
 
-                request.status = "success";
-                request.message = "Profile updated successfully.";
-                result.redirect("/profile"); // Redirect back to the profile page
-            } catch (error) {
-                console.error("Error updating profile:", error);
-                request.status = "error";
-                request.message = "An unexpected error occurred.";
-                result.redirect("/profile");
-            }
-        });
-
-
-        app.post("/profile/delete", async function(request, result) {
-            try {
-                const profileId = request.fields.profileId; // ID of the store entry to delete
-
-                // Ensure the store ID is provided
-                if (!profileId) {
-                    request.status = "error";
-                    request.message = "Profile Id is required for deletion.";
-                    return result.redirect("/profile");
+                if (updateResult.matchedCount === 0) {
+                    req.status = "error";
+                    req.message = "No matching profile found or you do not have permission to update.";
+                    return res.redirect("/profile");
                 }
 
-                // Delete the store entry from the database
-                await database.collection("profile").deleteOne({
-                    _id: new ObjectId(profileId),
-                    userId: request.session.user._id, // Ensure the logged-in user owns the entry
-                });
-
-                request.status = "success";
-                request.message = "Profile entry deleted successfully.";
-                result.redirect("/profile"); // Redirect back to the store page
+                req.status = "success";
+                req.message = "Vendor profile updated successfully.";
+                res.redirect("/profile");
             } catch (error) {
-                console.error("Error deleting store entry:", error);
-                request.status = "error";
-                request.message = "An unexpected error occurred.";
-                result.redirect("/profile");
+                console.error("Error updating vendor profile:", error);
+                req.status = "error";
+                req.message = "An unexpected error occurred.";
+                res.redirect("/profile");
             }
         });
+
+        // Delete Vendor Profile
+        app.post("/profile/delete", async(req, res) => {
+            try {
+                const profileId = req.fields.profileId;
+
+                // Ensure profile ID is provided
+                if (!profileId) {
+                    req.status = "error";
+                    req.message = "Profile ID is required for deletion.";
+                    return res.redirect("/profile");
+                }
+
+                // Delete the profile from the database
+                const deleteResult = await database.collection("profile").deleteOne({
+                    _id: new ObjectId(profileId),
+                    userId: req.session.user._id, // Ensure the logged-in user owns the profile
+                });
+
+                if (deleteResult.deletedCount === 0) {
+                    req.status = "error";
+                    req.message = "No matching profile found or you do not have permission to delete.";
+                    return res.redirect("/profile");
+                }
+
+                req.status = "success";
+                req.message = "Vendor profile deleted successfully.";
+                res.redirect("/profile");
+            } catch (error) {
+                console.error("Error deleting vendor profile:", error);
+                req.status = "error";
+                req.message = "An unexpected error occurred.";
+                res.redirect("/profile");
+            }
+        });
+
 
         app.post("/website", async function(request, result) {
             try {
@@ -2562,11 +3031,22 @@ http.listen(3000, function() {
                 var name = request.fields.name;
                 var email = request.fields.email;
                 var password = request.fields.password;
-                var role = request.fields.role;
+                var role = request.fields.role; // Ensure role is passed in the request
                 var phone = request.fields.phone;
                 var reset_token = "";
                 var isVerified = true;
                 var verification_token = new Date().getTime();
+
+                // Check if the role is "Team" and verify the email with the team table
+                if (role === "Team") {
+                    var teamMember = await database.collection("team").findOne({ email: email });
+
+                    if (!teamMember) {
+                        request.status = "error";
+                        request.message = "Email does not match any team record. Team role registration is only allowed for team members.";
+                        return result.render("Register", { request: request });
+                    }
+                }
 
                 // Check if the user already exists
                 var user = await database.collection("users").findOne({ email: email });
@@ -2581,11 +3061,7 @@ http.listen(3000, function() {
                             return result.render("Register", { request: request });
                         }
 
-                        // Set the initial subscriptionExpiry to 24 hours from now
-                        var subscriptionExpiry = new Date();
-                        subscriptionExpiry.setDate(subscriptionExpiry.getDate() + 1); // Add 1 day
-
-                        // Insert the new user with an empty payments array
+                        // Insert the new user into the database with the provided details
                         await database.collection("users").insertOne({
                             name: name,
                             email: email,
@@ -2598,10 +3074,10 @@ http.listen(3000, function() {
                             isVerified: isVerified,
                             verification_token: verification_token,
                             payments: [],
-                            subscriptionExpiry: subscriptionExpiry,
                             createdAt: new Date(),
                         });
 
+                        // Success message
                         request.status = "success";
                         request.message = "Signed up successfully. You can login now.";
                         result.render("Register", { request: request });
@@ -2619,20 +3095,8 @@ http.listen(3000, function() {
             }
         });
 
-        const cron = require('node-cron');
 
-        // Schedule task to run every day at midnight
-        cron.schedule('0 0 * * *', async() => {
-            var now = new Date();
-            try {
-                await database.collection("users").deleteMany({
-                    subscriptionExpiry: { $lt: now }
-                });
-                console.log("Expired accounts deleted successfully.");
-            } catch (error) {
-                console.error("Error deleting expired accounts:", error);
-            }
-        });
+
         const Razorpay = require('razorpay');
 
         app.post('/create-order', async(req, res) => {
