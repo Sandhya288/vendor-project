@@ -28,7 +28,7 @@
         }
         
         .navbar {
-            background-color: #200dc6;
+            background-color: #8e34b4;
             padding: 10px 20px;
             display: flex;
             justify-content: center;
@@ -155,6 +155,66 @@
             }
         }
         
+        .share-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            z-index: 2000;
+            text-align: center;
+        }
+        
+        .share-modal-content h3 {
+            margin-bottom: 10px;
+        }
+        
+        .share-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .share-icons a {
+            font-size: 2rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            color: white;
+        }
+        
+        .whatsapp-icon {
+            background: #25D366;
+            padding: 12px;
+        }
+        
+        .email-icon {
+            background: #d44638;
+            padding: 12px;
+        }
+        
+        .share-icons a:hover {
+            opacity: 0.8;
+        }
+        
+        button {
+            padding: 8px 12px;
+            border: none;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        
         .project-card h4 {
             font-size: 1.2rem;
             color: #333;
@@ -163,7 +223,7 @@
         }
         
         .content-container {
-            background-image: url(https://img.freepik.com/premium-vector/abstract-geometric-line-background_889452-56129.jpg?w=826);
+            background-image: url(https://img.freepik.com/free-photo/abstract-textured-backgound_1258-30714.jpg?t=st=1741631152~exp=1741634752~hmac=8b3dba463e5581b9ad1c65360d686f879e385c1a88effcf7dcde49c80c7f7d30&w=1060);
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center;
@@ -395,8 +455,26 @@
             </div>
 
             <div class="action-buttons">
-                <i class="fas fa-share-alt share-icon" onclick="shareWebsite('<%= website._id %>')" title="Share Link"></i>
+                <i class="fas fa-share-alt share-icon" onclick="openShareOptions('<%= website._id %>')" title="Share Link"></i>
             </div>
+
+            <!-- Share Modal -->
+            <div id="shareModal" class="share-modal">
+                <div class="share-modal-content">
+                    <h3>Share via</h3>
+                    <div class="share-icons">
+                        <a id="whatsappShare" target="_blank">
+                            <i class="fab fa-whatsapp whatsapp-icon"></i>
+                        </a>
+                        <a id="emailShare">
+                            <i class="fas fa-envelope email-icon"></i>
+                        </a>
+                    </div>
+                    <button onclick="closeShareOptions()">Close</button>
+                </div>
+            </div>
+
+
 
             <% } else { %>
                 <div class="website-header">
@@ -407,6 +485,19 @@
     </div>
 
     <script>
+        function openShareOptions(id) {
+            const websiteLink = `${window.location.origin}/website/view/${id}`;
+
+            document.getElementById('whatsappShare').href = `https://api.whatsapp.com/send?text=Check%20this%20out:%20${encodeURIComponent(websiteLink)}`;
+            document.getElementById('emailShare').href = `mailto:?subject=Check%20this%20website&body=${encodeURIComponent(websiteLink)}`;
+
+            document.getElementById('shareModal').style.display = 'block';
+        }
+
+        function closeShareOptions() {
+            document.getElementById('shareModal').style.display = 'none';
+        }
+
         function shareWebsite(id) {
             const websiteLink = `${window.location.origin}/website/view/${id}`;
             navigator.clipboard.writeText(websiteLink).then(() => {

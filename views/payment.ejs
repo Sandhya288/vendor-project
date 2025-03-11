@@ -242,9 +242,9 @@
 
                         <!-- Payment Form -->
                         <form method="POST" action="/payment">
-                            <input type="text" name="constructorName" placeholder="Constructor Name" required />
+                            <input type="text" name="constructorName" placeholder="Name" required />
                             <input type="text" name="location" placeholder="Location" required />
-                            <input type="text" name="projectSiteName" placeholder="Project Site Name" required />
+                            <input type="text" name="projectSiteName" placeholder="Project" required />
                             <select name="modeOfPayment" required>
                 <option value="" disabled>Select Mode of Payment</option>
                 <option value="Credit Card">Credit Card</option>
@@ -273,13 +273,13 @@
     %>
 
                                 <% for (const projectSite in groupedPayments) { %>
-                                    <h3>Project Site:
+                                    <h3>Project Name:
                                         <%= projectSite %>
                                     </h3>
                                     <table>
                                         <thead>
                                             <tr>
-                                                <th>Constructor Name</th>
+                                                <th>Name</th>
                                                 <th>Location</th>
                                                 <th>Mode of Payment</th>
                                                 <th>Date</th>

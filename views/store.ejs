@@ -138,13 +138,18 @@
         }
         /* Media query for mobile view */
         
-        @media (max-width: 768px) {
+        @media screen and (max-width: 768px) {
             input[type="text"],
             input[type="number"] {
-                width: 100%;
+                width: 250px !important;
+                /* Fixed width */
+                min-width: 250px !important;
+                max-width: 250px !important;
+                font-size: 16px;
+                /* Maintain readability */
             }
-            .form-row {
-                flex-direction: column;
+            button.save {
+                width: 100px !important;
             }
         }
         

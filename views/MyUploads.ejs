@@ -37,6 +37,10 @@
                                         <a href="javascript:void(0);" onclick="viewFile(this);" data-id="<%= singleFile._id %>" data-name="<%= singleFile.name %>" data-type="<%= singleFile.type %>" class="text-decoration-none">
                                             <%= singleFile.name %>
                                         </a>
+                                        <p class="text-muted mb-1">
+                                            <%= singleFile.formattedSize %>
+                                        </p>
+
                                     </h5>
                                     <button class="btn btn-primary mt-2" onclick="viewFile(this);" data-id="<%= singleFile._id %>" data-name="<%= singleFile.name %>" data-type="<%= singleFile.type %>">
                                 <i class="fa fa-eye"></i> View
@@ -282,6 +286,10 @@
             padding: 10px 20px;
             cursor: pointer;
             transition: background 0.3s ease, transform 0.3s ease;
+        }
+        
+        p {
+            font-size: 16px;
         }
         
         .upload-btn:hover {

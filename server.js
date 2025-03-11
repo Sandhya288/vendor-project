@@ -2834,9 +2834,21 @@ http.listen(3000, function() {
                 const folderPath = `public/uploads/${user.email}/${folder}`;
 
                 if (request.files.file.size > 0) {
+                    // Convert file size to KB or MB
+                    function formatFileSize(bytes) {
+                        if (bytes < 1024) {
+                            return bytes + " B";
+                        } else if (bytes < 1024 * 1024) {
+                            return (bytes / 1024).toFixed(2) + " KB";
+                        } else {
+                            return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+                        }
+                    }
+
                     const uploadedObj = {
                         "_id": ObjectId(),
-                        "size": request.files.file.size, // in bytes
+                        "size": request.files.file.size, // Store original size in bytes
+                        "formattedSize": formatFileSize(request.files.file.size), // Store formatted size
                         "name": request.files.file.name,
                         "type": request.files.file.type,
                         "filePath": "",
