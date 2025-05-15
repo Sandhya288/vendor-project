@@ -349,16 +349,20 @@
 <body>
 
     <div class="navbar">
-        <a href="#about" onclick="showSection('about')">About</a>
-        <a href="#projects" onclick="showSection('projects')">Projects</a>
-        <a href="#contact" onclick="showSection('contact')">Contact</a>
+        <a href="#about-<%= website.name.replace(/\s+/g, '-').toLowerCase() %>" onclick="showSection('about-<%= website.name.replace(/\s+/g, '-').toLowerCase() %>')">About</a>
+
+        <a href="#projects-<%= website.name.replace(/\s+/g, '-').toLowerCase() %>" onclick="showSection('projects-<%= website.name.replace(/\s+/g, '-').toLowerCase() %>')">Projects</a>
+
+        <a href="#contact-<%= website.name.replace(/\s+/g, '-').toLowerCase() %>" onclick="showSection('contact-<%= website.name.replace(/\s+/g, '-').toLowerCase() %>')">Contact</a>
+
     </div>
 
     <div class="website-container">
         <% if (website && website.name) { %>
 
             <div class="main">
-                <div class="content-container" id="about">
+                <div class="content-container" id="about-<%= website.name.replace(/\s+/g, '-').toLowerCase() %>">
+
                     <div class="website-header">
                         <h1>
                             <%= website.name %>
@@ -387,7 +391,8 @@
                     </div>
                 </div>
 
-                <div class="content-container" id="projects">
+                <div class="content-container" id="projects-<%= website.name.replace(/\s+/g, '-').toLowerCase() %>">
+
                     <h3>Projects:</h3>
                     <div class="website-content">
                         <div class="project-card-container">
@@ -419,7 +424,8 @@
                     </div>
                 </div>
 
-                <div class="content-container" id="contact">
+                <div class="content-container" id="contact-<%= website.name.replace(/\s+/g, '-').toLowerCase() %>">
+
                     <h3>Contact:</h3>
                     <div class="contact-container">
                         <ul>
@@ -519,7 +525,9 @@
         }
 
         // Show the 'About' section by default
-        showSection('about');
+        // Show the section from the URL hash, or default to 'about'
+        const hash = window.location.hash.substring(1); // remove #
+        showSection(hash || 'about-<%= website.name.replace(/\s+/g, ' - ').toLowerCase() %>');
     </script>
 </body>
 

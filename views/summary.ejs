@@ -71,6 +71,7 @@
                 width: 100%;
                 transition: border-color 0.3s ease, box-shadow 0.3s ease;
                 background-color: #f8f9fa;
+                color: #6c757d;
             }
             
             input:focus {
@@ -221,18 +222,19 @@
 
 
                 <div id="form-container">
-                    <input type="text" name="masterBedroom" placeholder="Enter masterBedroom size" required />
-                    <input type="text" name="attachedBathroom" placeholder="Enter attachedBathroom size" required />
-                    <input type="text" name="bedroom2" placeholder="Enter bedroom2 size" required />
+                    <input type="text" name="masterBedroom" placeholder="Enter masterBedroom size" value="<%= summary?.masterBedroom || '' %>" required />
+                    <input type="text" name="attachedBathroom" placeholder="Enter attachedBathroom size" value="<%= summary?.attachedBathroom || '' %>" required />
+                    <input type="text" name="bedroom2" placeholder="Enter bedroom2 size" value="<%= summary?.bedroom2 || '' %>" required />
 
-                    <input type="text" name="commonBathroom" placeholder="Enter commonBathroom size" required />
-                    <input type="text" name="livingRoom" placeholder="Enter livingRoom size" required />
-                    <input type="text" name="kitchen" placeholder="Enter kitchen size" required />
-                    <input type="text" name="diningSpace" placeholder="Enter diningSpace size" />
-                    <input type="text" name="utilityArea" placeholder="Enter utilityArea size" />
-                    <input type="text" name="porch" placeholder="Enter porch size" />
-                    <input type="text" name="sitout" placeholder="Enter sitout size" />
+                    <input type="text" name="commonBathroom" placeholder="Enter commonBathroom size" value="<%= summary?.commonBathroom || '' %>" required />
+                    <input type="text" name="livingRoom" placeholder="Enter livingRoom size" value="<%= summary?.livingRoom || '' %>" required />
+                    <input type="text" name="kitchen" placeholder="Enter kitchen size" value="<%= summary?.kitchen || '' %>" required />
+                    <input type="text" name="diningSpace" placeholder="Enter diningSpace size" value="<%= summary?.diningSpace || '' %>" />
+                    <input type="text" name="utilityArea" placeholder="Enter utilityArea size" value="<%= summary?.utilityArea || '' %>" />
+                    <input type="text" name="porch" placeholder="Enter porch size" value="<%= summary?.porch || '' %>" />
+                    <input type="text" name="sitout" placeholder="Enter sitout size" value="<%= summary?.sitout || '' %>" />
                 </div>
+
 
                 <button type="submit">Get Summary</button>
             </form>
@@ -242,6 +244,7 @@
 
             <div class="container">
                 <h1>Floor Plan Summary</h1>
+
 
 
 

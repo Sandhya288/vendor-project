@@ -60,6 +60,15 @@
             flex: 1;
         }
         
+        .primary {
+            background-color: green;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
         .item-row button {
             background-color: #ff4d4d;
             color: white;
@@ -173,6 +182,8 @@
                     <input type="number" name="materials[][quantity]" placeholder="Quantity" required onchange="updateTotal(this)">
                     <input type="number" name="materials[][rate]" placeholder="Rate (₹)" required onchange="updateTotal(this)">
                     <input type="number" name="materials[][total]" placeholder="Total (₹)" readonly>
+                    <button type="button" class="primary" style="background-color: green; color: white;">Save</button>
+
                     <button type="button" class="remove-item-btn" onclick="removeRow(this)">Remove</button>
                 </div>
             </div>
@@ -182,8 +193,12 @@
                 <div class="total-summary">
                     Total Cost: ₹<span id="totalCost">0.00</span>
                 </div>
-                <button type="submit">Submit</button>
+
             </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button type="button" onclick="printDetails()">Print</button>
+            </div>
+
         </form>
     </div>
 
@@ -234,6 +249,8 @@
                 <input type="number" name="materials[][quantity]" placeholder="Quantity" required onchange="updateTotal(this)">
                 <input type="number" name="materials[][rate]" placeholder="Rate (₹)" required onchange="updateTotal(this)">
                 <input type="number" name="materials[][total]" placeholder="Total (₹)" readonly>
+                 <button type="button" class="primary" style="background-color: green; color: white;">Save</button>
+
                 <button type="button" class="remove-item-btn" onclick="removeRow(this)">Remove</button>
             `;
             materialsContainer.appendChild(newRow);
@@ -304,6 +321,83 @@
                 totalInputs.forEach(input => input.value = (95 * 8).toFixed(2));
             }
             updateTotals();
+        }
+
+        function printDetails() {
+            let printWindow = window.open('', '', 'height=800,width=1000');
+            let html = `
+                <html>
+                <head>
+                    <title>Print Materials</title>
+                    <style>
+                        body {
+                            font-family: 'Poppins', Arial, sans-serif;
+                            padding: 20px;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 20px;
+                        }
+                        table, th, td {
+                            border: 1px solid #333;
+                        }
+                        th, td {
+                            padding: 10px;
+                            text-align: left;
+                        }
+                        h2 {
+                            text-align: center;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h2>Materials Summary</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Material</th>
+                               
+                                <th>Subcategory</th>
+                                <th>Quantity</th>
+                                <th>Rate (₹)</th>
+                                <th>Total (₹)</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+
+            const rows = document.querySelectorAll(".item-row");
+            rows.forEach(row => {
+                const material = row.querySelector('[name="materials[][name]"]').value || '';
+                const customName = row.querySelector('[name="materials[][customName]"]').value || '';
+                const subcategory = row.querySelector('[name="materials[][subcategory]"]').value || '';
+                const quantity = row.querySelector('[name="materials[][quantity]"]').value || '';
+                const rate = row.querySelector('[name="materials[][rate]"]').value || '';
+                const total = row.querySelector('[name="materials[][total]"]').value || '';
+
+                html += `
+                    <tr>
+                        <td>${material}</td>
+                     
+                        <td>${subcategory}</td>
+                        <td>${quantity}</td>
+                        <td>${rate}</td>
+                        <td>${total}</td>
+                    </tr>`;
+            });
+
+            html += `
+                        </tbody>
+                    </table>
+                    <h3 style="text-align:right;">Total Cost: ₹${document.getElementById("totalCost").textContent}</h3>
+                </body>
+                </html>`;
+
+            printWindow.document.write(html);
+            printWindow.document.close();
+            printWindow.focus();
+            printWindow.print();
+            printWindow.close();
         }
     </script>
 </body>

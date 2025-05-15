@@ -2669,6 +2669,18 @@ http.listen(3000, function() {
             }
         });
 
+        // POST /RenameFile
+        app.post('/RenameFile', async(req, res) => {
+            const { _id, newName } = req.body;
+            try {
+                await File.updateOne({ _id }, { name: newName });
+                res.redirect('/MyUploads'); // or wherever you want to redirect
+            } catch (err) {
+                res.status(500).send("Error renaming file");
+            }
+        });
+
+
 
 
 
